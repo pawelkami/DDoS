@@ -11,7 +11,7 @@ https://www.butterfield.com/blog/2017/11/29/the-best-cycling-routes-spain/
 https://www.butterfield.com/blog/2017/06/29/the-8-best-biking-routes-in-italy/
 https://www.rei.com/blog/hike/idaho-hikes-near-breweries
 https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park
-https://www.wroclaw.pl/en/running-routes
+https://www.wroclaw.pl/en/running-routes, True
 http://www.suunto.com/en-US/sports/News-Articles-container-page/3-must-run-routes-in-Barcelona/
 https://hikingguy.com/hiking-trails/las-vegas-hikes/calico-tanks-trail-red-rock-canyon/
 http://www.suunto.com/sports/News-Articles-container-page/3-must-run-routes-in-Barcelona/
@@ -23,7 +23,7 @@ https://www.rei.com/adventures/trips/africa/kilimanjaro-climb-lemosho.html
 https://www.visitdenmark.com/north-jutland/panorama-cycle-routes-west-denmark
 http://www.szklarskaporeba.pl/en/actively/summer/bicycles/cycling-routes.html
 https://thebigoutside.com/the-best-hikes-in-utahs-national-parks/
-https://thebigoutside.com/5-perfect-national-park-backpacking-trips-for-beginners/
+https://thebigoutside.com/5-perfect-national-park-backpacking-trips-for-beginners/, True
 https://www.tov.be/en/page/5-most-popular-bicycle-routes
 http://cluelesshiker.blogspot.ca/2014/09/north-coast-trail-day-1-shushartie-bay.html
 http://cluelesshiker.blogspot.ca/2014/09/north-coast-trail-day-2-nahwitti-river.html
@@ -55,8 +55,8 @@ http://www.cycling-challenge.com/col-de-portes-jura-col-hunting/
 http://www.cycling-challenge.com/col-de-crozet-3/
 http://www.cycling-challenge.com/grand-colombier-via-col-de-charbemenes/
 http://www.cycling-challenge.com/the-ten-highest-paved-cycling-climbs-in-the-jura-mountains/
-http://www.cycling-challenge.com/col-du-clergeon-and-col-de-la-chambotte/
-http://www.cycling-challenge.com/col-de-cuvery-col-de-belleroche-col-de-richemond/
-http://www.cycling-challenge.com/la-vue-des-alpes/
-http://www.cycling-challenge.com/la-barillette-and-la-dole/
-http://www.cycling-challenge.com/col-de-crozet-above-the-clouds/
+http://www.cycling-challenge.com/col-du-clergeon-and-col-de-la-chambotte/, True
+http://www.cycling-challenge.com/col-de-cuvery-col-de-belleroche-col-de-richemond/, True
+http://www.cycling-challenge.com/la-vue-des-alpes/, True
+http://www.cycling-challenge.com/la-barillette-and-la-dole/, True
+http://www.cycling-challenge.com/col-de-crozet-above-the-clouds/, True
