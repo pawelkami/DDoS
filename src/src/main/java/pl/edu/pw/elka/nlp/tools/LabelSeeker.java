@@ -32,7 +32,7 @@ public class LabelSeeker {
      * @return
      */
     public List<Pair<String, Double>> getScores(INDArray vector) {
-        List<Pair<String, Double>> result = new ArrayList<>();
+        List<Pair<String, Double>> result = new ArrayList<Pair<String, Double>>();
         for (String label: labelsUsed) {
             INDArray vecLabel = lookupTable.vector(label);
             if (vecLabel == null) throw new IllegalStateException("Label '"+ label+"' has no known vector!");

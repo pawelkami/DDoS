@@ -50,7 +50,7 @@ public class NLPUtils {
     }
 
     private List<String> removeStopWords(String[] tokens) {
-        List<String> clearedTokens = new ArrayList<>();
+        List<String> clearedTokens = new ArrayList<String>();
         for(String s : tokens)
         {
             if(stopwords.contains(s.toLowerCase()))
