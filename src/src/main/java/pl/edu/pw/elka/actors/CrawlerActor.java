@@ -29,13 +29,13 @@ public class CrawlerActor extends AbstractActor {
 
     private void searchDocuments() {
 
-        while (true) {
+        //while (true) {
             // TODO szukamy dokumentów i je wysyłąmy, reszta sama się już stanie - agent sam dostanie już wiadomość zwrotną asynchronicznie jeśli tekst był poprawny
 
             String text = "";
             getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getSelf());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
 
-        }
+        //}
     }
 
     @Override
