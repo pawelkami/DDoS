@@ -14,10 +14,7 @@ class Main
         final ActorSystem actorSystem = ActorSystem.create("ddos");
         final ActorRef consoleActor = actorSystem.actorOf(ConsoleActor.props(), "console");
 
-        final Inbox inbox = Inbox.create(actorSystem);
-
-        // utzymujemy połączenie z konsolą i wysyłamy jej pingi, żeby ewentualnie pobudzić
-        actorSystem.scheduler().schedule(Duration.Zero(), Duration.create(1, TimeUnit.SECONDS), consoleActor, new ConsoleActor.ConsolePing(), actorSystem.dispatcher(), ActorRef.noSender());
+        //final Inbox inbox = Inbox.create(actorSystem);
 
     }
 

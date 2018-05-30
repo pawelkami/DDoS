@@ -12,13 +12,11 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
 import pl.edu.pw.elka.actors.SearcherAgent.SearchPathInfoQuery;
 import pl.edu.pw.elka.utils.ConfigParser;
+import scala.concurrent.duration.FiniteDuration;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Scanner;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 enum ConsoleState {
     USER_INPUT,
@@ -29,12 +27,6 @@ class ConsoleNoDataIsNeeded {
 }
 
 public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeeded> {
-
-    /**
-     * Klasa reprezentująca wiadomość, która startuje agenta.
-     */
-    static public class ConsolePing {
-    }
 
     static class PathInfoResponse {
         final String pathInfo;
@@ -47,9 +39,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
     /**
      * Czekamy 5 sekund na wiadomości zwrotne.
      */
-    private final long MAX_WAIT_RESPONSE = 5000;
-
-    private long queryStart;
+    private final long MAX_WAIT_RESPONSE = 5L;
 
     private Router router;
 
@@ -59,19 +49,11 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
 
     private FSM.State<ConsoleState, ConsoleNoDataIsNeeded> printReceivedPath(PathInfoResponse pathInfo, ConsoleNoDataIsNeeded noData) {
         System.out.println(pathInfo.pathInfo);
-        return checkIfTimeout();
+        return stay();
     }
 
-    private FSM.State<ConsoleState, ConsoleNoDataIsNeeded> checkIfTimeout() {
-        System.out.println("SPRAWDZAMY TIMEOUT");
-        if (Instant.now().toEpochMilli() - queryStart >= MAX_WAIT_RESPONSE)
-            return goTo(ConsoleState.USER_INPUT);
-        else
-            return stay();
-    }
 
     private FSM.State<ConsoleState, ConsoleNoDataIsNeeded> searchPaths(SearchPathInfoQuery path, ConsoleNoDataIsNeeded noData) {
-        queryStart = Instant.now().toEpochMilli();
         router.route(new SearchPathInfoQuery(path.query), getContext().self());
         return goTo(ConsoleState.WAITING_FOR_RESPONSES);
     }
@@ -136,14 +118,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
     {
         startWith(ConsoleState.USER_INPUT, new ConsoleNoDataIsNeeded());
 
-        when(ConsoleState.USER_INPUT,
-                matchEvent(ConsolePing.class,
-                        ConsoleNoDataIsNeeded.class,
-                        (starter, noData) -> {
-                            return stay();
-                        })
-        );
-
+        // ignore responses that came after timeout
         when(ConsoleState.USER_INPUT,
                 matchEvent(PathInfoResponse.class,
                         (pathInfo, noData) -> {
@@ -152,23 +127,28 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
                         })
         );
 
+        // po kilku sekundach czekania na odpowiedzi od agentów występuje timeout i znowu zaczynamy pytać użytkownika co chce zrobić
+        when(ConsoleState.WAITING_FOR_RESPONSES,
+                FiniteDuration.create(MAX_WAIT_RESPONSE, TimeUnit.SECONDS),
+                matchEvent(Collections.singletonList(StateTimeout()),
+                        ConsoleNoDataIsNeeded.class,
+                        (et, consoleNoDataIsNeeded) -> goTo(ConsoleState.USER_INPUT)
+                )
+        );
+
+        // if we get response from our child agents
         when(ConsoleState.WAITING_FOR_RESPONSES,
                 matchEvent(PathInfoResponse.class,
                         ConsoleNoDataIsNeeded.class,
                         this::printReceivedPath));
 
-        when(ConsoleState.WAITING_FOR_RESPONSES,
-                matchEvent(ConsolePing.class,
-                        ConsoleNoDataIsNeeded.class,
-                        (starter, noData) -> checkIfTimeout()
-                )
-        );
-
+        // if user wants to search for paths, do it
         when(ConsoleState.USER_INPUT,
                 matchEvent(SearchPathInfoQuery.class,
                         ConsoleNoDataIsNeeded.class,
                         this::searchPaths));
 
+        // on change from WAITING_FOR_RESPONSES to USER_INPUT ask user what to do
         onTransition(
                 matchState(ConsoleState.WAITING_FOR_RESPONSES,
                         ConsoleState.USER_INPUT,
@@ -180,16 +160,14 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
                     return stay();
                 })
         );
-        timer
 
-
+        // creating routees from config
         List<Routee> routees = new ArrayList<>();
-        // TODO czytać z configa i tworzyć odpowiednie agenty, teraz tymczasowe rozwiązanie
         try {
             ConfigParser configParser = new ConfigParser(Objects.requireNonNull(getClass().getClassLoader().getResource("config.json")).getPath());
             for (Object o : configParser.getAttributesList()) {
-                JSONObject jsonObj = (JSONObject)o;
-                ActorRef r = getContext().actorOf(SearcherAgent.props((String)jsonObj.get("url"), (String)jsonObj.get("htmlTagType"), (String)jsonObj.get("htmlTagValue")));
+                JSONObject jsonObj = (JSONObject) o;
+                ActorRef r = getContext().actorOf(SearcherAgent.props((String) jsonObj.get("url"), (String) jsonObj.get("htmlTagType"), (String) jsonObj.get("htmlTagValue")));
                 getContext().watch(r);
                 routees.add(new ActorRefRoutee(r));
             }
@@ -199,7 +177,6 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
             System.out.println("Couldn't parse config.json file!!!");
             System.exit(1);
         }
-
 
         run();
     }
