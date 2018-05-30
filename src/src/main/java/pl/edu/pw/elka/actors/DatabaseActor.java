@@ -15,7 +15,7 @@ public class DatabaseActor extends AbstractActor {
      * Klasa reprezentująca wiadomość, która zawiera opis ścieżki, która ma zostać dodana do bazy danych.
      */
     static class PathInfoRecord {
-        final String pathDescription;
+        final String pathDescription;   // tekst opisujący ścieżkę rowerową/biegową...
 
         PathInfoRecord(String pathDescription) {
             this.pathDescription = pathDescription;
@@ -39,8 +39,7 @@ public class DatabaseActor extends AbstractActor {
 
     private List<PathInfoRecord> paths;
 
-    private DatabaseActor()
-    {
+    private DatabaseActor() {
         paths = new ArrayList<>();
     }
 
@@ -52,7 +51,7 @@ public class DatabaseActor extends AbstractActor {
                 )
                 .match(SearchPathInfoQuery.class,
                         this::searchPathInfos
-                        )
+                )
                 .match(PathInfoResponse.class,
                         pathInfoResponse -> getContext().getParent().tell(pathInfoResponse, getSelf()))
                 .build();

@@ -29,6 +29,11 @@ public class NLPActor extends AbstractActor {
         return Props.create(NLPActor.class, NLPActor::new);
     }
 
+    /**
+     * Funkcja sprawdza czy tekst ścieżki zgadza się z zapytaniem. Jeśli tak to wysyła wiadomość PathInfoResponse.
+     * Jest to wiadomość od Searchera (a wcześniej od użytkownika).
+     * @param textWithQuery
+     */
     private void analyseQuery(TextWithQuery textWithQuery) {
         // TODO analiza wiadomości
 
@@ -37,6 +42,10 @@ public class NLPActor extends AbstractActor {
             getContext().getParent().tell(new PathInfoResponse(textWithQuery.text), getSelf());
     }
 
+    /**
+     * Wiadomość od crawlera.
+     * @param text
+     */
     private void classifyText(TextToClassify text) {
         // TODO klasyfikowanie tekstu - sprawdzenie czy pasuje do naszego wzorca
         if(true)    // TODO jeśli jest z naszej kategorii to wysyłamy wiadomość, w przeciwnym wypadku nic
