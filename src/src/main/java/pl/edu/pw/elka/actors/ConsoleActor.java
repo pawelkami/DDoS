@@ -8,11 +8,16 @@ import akka.routing.ActorRefRoutee;
 import akka.routing.BroadcastRoutingLogic;
 import akka.routing.Routee;
 import akka.routing.Router;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.ParseException;
 import pl.edu.pw.elka.actors.SearcherAgent.SearchPathInfoQuery;
+import pl.edu.pw.elka.utils.ConfigParser;
 
+import java.io.IOException;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Scanner;
 
 enum ConsoleState {
@@ -175,15 +180,26 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
                     return stay();
                 })
         );
+        timer
+
 
         List<Routee> routees = new ArrayList<>();
         // TODO czytać z configa i tworzyć odpowiednie agenty, teraz tymczasowe rozwiązanie
-        for (int i = 0; i < 10; i++) {
-            ActorRef r = getContext().actorOf(SearcherAgent.props(String.valueOf(i), ""));
-            getContext().watch(r);
-            routees.add(new ActorRefRoutee(r));
+        try {
+            ConfigParser configParser = new ConfigParser(Objects.requireNonNull(getClass().getClassLoader().getResource("config.json")).getPath());
+            for (Object o : configParser.getAttributesList()) {
+                JSONObject jsonObj = (JSONObject)o;
+                ActorRef r = getContext().actorOf(SearcherAgent.props((String)jsonObj.get("url"), (String)jsonObj.get("htmlTagType"), (String)jsonObj.get("htmlTagValue")));
+                getContext().watch(r);
+                routees.add(new ActorRefRoutee(r));
+            }
+            router = new Router(new BroadcastRoutingLogic(), routees);
+        } catch (IOException | ParseException e) {
+            e.printStackTrace();
+            System.out.println("Couldn't parse config.json file!!!");
+            System.exit(1);
         }
-        router = new Router(new BroadcastRoutingLogic(), routees);
+
 
         run();
     }

@@ -9,7 +9,8 @@ import static pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
 public class CrawlerActor extends AbstractActor {
 
     final String url;
-    final String htmlElementId;
+    final String htmlElementType;
+    final String htmlElementValue;
 
     /**
      * Wiadomość startująca działanie crawlera.
@@ -18,13 +19,14 @@ public class CrawlerActor extends AbstractActor {
 
     }
 
-    private CrawlerActor(String url, String htmlElementId) {
+    private CrawlerActor(String url, String htmlElementType, String htmlElementValue) {
         this.url = url;
-        this.htmlElementId = htmlElementId;
+        this.htmlElementType = htmlElementType;
+        this.htmlElementValue = htmlElementValue;
     }
 
-    static Props props(String url, String htmlElementId) {
-        return Props.create(CrawlerActor.class, () -> new CrawlerActor(url, htmlElementId));
+    static Props props(String url, String htmlElementType, String htmlElementValue) {
+        return Props.create(CrawlerActor.class, () -> new CrawlerActor(url, htmlElementType, htmlElementValue));
     }
 
     private void searchDocuments() {

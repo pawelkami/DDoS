@@ -1,0 +1,12 @@
+[
+  {
+    "url" : "http://google.pl",
+    "htmlTagType": "div",
+    "htmlTagValue": "value"
+  },
+  {
+    "url" : "http://google2.pl",
+    "htmlTagType": "div2",
+    "htmlTagValue": "value2"
+  }
+]

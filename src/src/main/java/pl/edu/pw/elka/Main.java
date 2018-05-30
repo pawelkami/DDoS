@@ -16,8 +16,7 @@ class Main
 
         final Inbox inbox = Inbox.create(actorSystem);
 
-        //consoleActor.tell(new ConsoleActor.ConsolePing(), ActorRef.noSender());
-
+        // utzymujemy połączenie z konsolą i wysyłamy jej pingi, żeby ewentualnie pobudzić
         actorSystem.scheduler().schedule(Duration.Zero(), Duration.create(1, TimeUnit.SECONDS), consoleActor, new ConsoleActor.ConsolePing(), actorSystem.dispatcher(), ActorRef.noSender());
 
     }
