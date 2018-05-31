@@ -58,10 +58,14 @@ public class Crawler
         if(driver == null) {
             driver.get("");
         }
-        WebElement element = driver.findElement(By.id(id));
-        if(element != null) {
-            return element.getText();
-        } else {
+        try {
+            WebElement element = driver.findElement(By.id(id));
+            if(element != null) {
+                return element.getText();
+            } else {
+                return "";
+            }
+        } catch (org.openqa.selenium.WebDriverException e) {
             return "";
         }
     }
@@ -70,10 +74,14 @@ public class Crawler
         if(driver == null) {
             driver.get("");
         }
-        WebElement element = driver.findElement(By.className(cssClass));
-        if(element != null) {
-            return element.getText();
-        } else {
+        try {
+            WebElement element = driver.findElement(By.className(cssClass));
+            if(element != null) {
+                return element.getText();
+            } else {
+                return "";
+            }
+        } catch (org.openqa.selenium.WebDriverException e) {
             return "";
         }
     }
@@ -82,10 +90,14 @@ public class Crawler
         if(driver == null) {
             driver.get("");
         }
-        WebElement element = driver.findElement(By.name(name));
-        if(element != null) {
-            return element.getText();
-        } else {
+        try {
+            WebElement element = driver.findElement(By.name(name));
+            if(element != null) {
+                return element.getText();
+            } else {
+                return "";
+            }
+        } catch (org.openqa.selenium.WebDriverException e) {
             return "";
         }
     }
@@ -94,10 +106,14 @@ public class Crawler
         if(driver == null) {
             driver.get("");
         }
-        WebElement element = driver.findElement(By.tagName(tagname));
-        if(element != null) {
-            return element.getText();
-        } else {
+        try {
+            WebElement element = driver.findElement(By.tagName(tagname));
+            if(element != null) {
+                return element.getText();
+            } else {
+                return "";
+            }
+        } catch (org.openqa.selenium.WebDriverException e) {
             return "";
         }
     }
@@ -106,10 +122,30 @@ public class Crawler
         if(driver == null) {
             driver.get("");
         }
-        WebElement element = driver.findElement(By.cssSelector(cssSelector));
-        if(element != null) {
-            return element.getText();
-        } else {
+        try {
+            WebElement element = driver.findElement(By.cssSelector(cssSelector));
+            if(element != null) {
+                return element.getText();
+            } else {
+                return "";
+            }
+        } catch (org.openqa.selenium.WebDriverException e) {
+            return "";
+        }
+    }
+
+    public String getContentByXpath(String xpath) {
+        if(driver == null) {
+            driver.get("");
+        }
+        try {
+            WebElement element = driver.findElement(By.xpath(xpath));
+            if(element != null) {
+                return element.getText();
+            } else {
+                return "";
+            }
+        } catch (org.openqa.selenium.WebDriverException e) {
             return "";
         }
     }

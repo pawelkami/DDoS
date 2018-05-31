@@ -78,11 +78,16 @@ public class ScraperController {
 
         if(!UrlScraper.scrapedUrls.isEmpty()) {
             Crawler crawler = new Crawler();
-            Integer it = 1;
+//            Integer it = 1;
             for(String scrapedUrl : UrlScraper.scrapedUrls) {
                 crawler.get(scrapedUrl);
-                crawler.saveScreenshot("D:\\selenium_wp_" + it.toString() + ".png");
-                it += 1;
+
+                String xpath = "//" + tagType + "[@" + tagValue.substring(0, tagValue.indexOf('=')) + "='" + tagValue.substring(tagValue.indexOf('=') + 1) + "']";
+                String content = crawler.getContentByXpath(xpath);
+
+                System.out.println(content);
+//                crawler.saveScreenshot("D:\\selenium_wp_" + it.toString() + ".png");
+//                it += 1;
             }
             crawler.closeWebDriver();
         }
@@ -91,6 +96,6 @@ public class ScraperController {
 
     public static void main(String[] args) throws Exception {
         ScraperController scraper = new ScraperController();
-        scraper.crawl("https://www.wp.pl", "", "");
+        scraper.crawl("https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park", "div", "class=main-content");
     }
 }
