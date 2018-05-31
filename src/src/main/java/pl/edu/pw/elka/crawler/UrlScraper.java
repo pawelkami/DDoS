@@ -1,5 +1,7 @@
 package pl.edu.pw.elka.crawler;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -16,7 +18,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
  */
 public class UrlScraper extends WebCrawler {
 
-    public static Set<String> scrapedUrls = new HashSet<String>();
+    public static Map<String, HashSet<String>> scrapedUrls = new HashMap<String, HashSet<String>>();
 
     /**
      * Metoda weryfikuje kiedy crawler ma podany url odwiedzic.
@@ -38,7 +40,16 @@ public class UrlScraper extends WebCrawler {
     @Override
     public void visit(Page page) {
         String url = page.getWebURL().getURL();
-        System.out.println("URL: " + url);
-        UrlScraper.scrapedUrls.add(url);
+//        System.out.println("URL: " + url);
+
+        boolean added = false;
+        while(!added) {
+            try {
+                UrlScraper.scrapedUrls.putIfAbsent(page.getWebURL().getDomain(), new HashSet<String>());
+                UrlScraper.scrapedUrls.get(page.getWebURL().getDomain()).add(url);
+                added = true;
+            } catch(NullPointerException e) {
+            }
+        }
     }
 }

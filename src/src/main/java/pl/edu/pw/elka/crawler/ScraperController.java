@@ -5,6 +5,7 @@ import edu.uci.ics.crawler4j.crawler.CrawlController;
 import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
+import edu.uci.ics.crawler4j.url.WebURL;
 
 public class ScraperController {
 
@@ -76,19 +77,26 @@ public class ScraperController {
          */
         controller.start(UrlScraper.class, numberOfCrawlers);
 
+
         if(!UrlScraper.scrapedUrls.isEmpty()) {
             Crawler crawler = new Crawler();
 //            Integer it = 1;
-            for(String scrapedUrl : UrlScraper.scrapedUrls) {
-                crawler.get(scrapedUrl);
+            WebURL webUrl = new WebURL();
+            webUrl.setURL(url);
+            try {
+                for(String scrapedUrl : UrlScraper.scrapedUrls.get(webUrl.getDomain())) {
+                    crawler.get(scrapedUrl);
 
-                String xpath = "//" + tagType + "[@" + tagValue.substring(0, tagValue.indexOf('=')) + "='" + tagValue.substring(tagValue.indexOf('=') + 1) + "']";
-                String content = crawler.getContentByXpath(xpath);
+                    String xpath = "//" + tagType + "[@" + tagValue.substring(0, tagValue.indexOf('=')) + "='" + tagValue.substring(tagValue.indexOf('=') + 1) + "']";
+                    String content = crawler.getContentByXpath(xpath);
 
-                System.out.println(content);
+                    System.out.println(content);
 //                crawler.saveScreenshot("D:\\selenium_wp_" + it.toString() + ".png");
 //                it += 1;
+                }
+            } catch (NullPointerException e) {
             }
+            UrlScraper.scrapedUrls.remove(webUrl.getDomain());
             crawler.closeWebDriver();
         }
 
