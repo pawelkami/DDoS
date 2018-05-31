@@ -1,6 +1,9 @@
 package pl.edu.pw.elka.actors;
 
-import akka.actor.*;
+import akka.actor.AbstractFSM;
+import akka.actor.ActorRef;
+import akka.actor.FSM;
+import akka.actor.Props;
 import akka.routing.ActorRefRoutee;
 import akka.routing.BroadcastRoutingLogic;
 import akka.routing.Routee;
@@ -123,8 +126,8 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
         Random rnd = new Random();
         int routeesCount = router.routees().size();
         Routee routeeToKill = router.routees().apply(rnd.nextInt() % routeesCount);
-        router.removeRoutee(routeeToKill);
-        routeeToKill.send(Kill.getInstance(), getSelf());
+        router = router.removeRoutee(routeeToKill);
+        //routeeToKill.send(Kill.getInstance(), getSelf());
     }
 
     {
