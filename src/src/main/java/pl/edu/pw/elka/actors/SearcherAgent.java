@@ -3,11 +3,15 @@ package pl.edu.pw.elka.actors;
 import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
 import akka.actor.Props;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import pl.edu.pw.elka.actors.ConsoleActor.PathInfoResponse;
 import pl.edu.pw.elka.actors.CrawlerActor.CrawlerStarter;
 import pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
 
 public class SearcherAgent extends AbstractActor {
+
+    private static final Logger log = LoggerFactory.getLogger(SearcherAgent.class);
 
     private ActorRef dbActor;
     private ActorRef crawlerActor;
@@ -27,6 +31,7 @@ public class SearcherAgent extends AbstractActor {
         dbActor = getContext().actorOf(DatabaseActor.props());
         crawlerActor = getContext().actorOf(CrawlerActor.props(url, htmlElementType, htmlElementValue));
         crawlerActor.tell(new CrawlerStarter(), getSelf()); // uruchamiamy crawlera
+        log.debug("Created Searcher for website {}", url);
     }
 
     static Props props(String url, String htmlElementType, String htmlElementValue) {
@@ -34,7 +39,7 @@ public class SearcherAgent extends AbstractActor {
     }
 
     private void handlePathInfoQuery(SearchPathInfoQuery query) {
-        System.out.println("OTRZYMALEM ZAPYTANIE " + query.query);
+        log.debug("Received query {}", query.query);
         dbActor.tell(query, getSelf());
     }
 
@@ -49,7 +54,7 @@ public class SearcherAgent extends AbstractActor {
                 )
                 .match(PathInfoRecord.class,
                         pathInfoRecord -> dbActor.tell(pathInfoRecord, getSelf())
-                        )
+                )
                 .build();
     }
 }

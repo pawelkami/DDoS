@@ -39,7 +39,7 @@ public class NLPActor extends AbstractActor {
 
         // TODO jeśli spełnia zapytanie to wysyłamy zwrotnie wiadomość z tekstem, w przeciwnym przypadku nic nie robimy
         if(true)
-            getContext().getParent().tell(new PathInfoResponse(textWithQuery.text), getSelf());
+            getContext().sender().tell(new PathInfoResponse(textWithQuery.text), getSelf());
     }
 
     /**
