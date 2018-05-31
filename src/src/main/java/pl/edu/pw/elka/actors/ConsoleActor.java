@@ -59,7 +59,8 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
     private void printMenu() {
         System.out.println("What do you want to do?");
         System.out.println("1. Search path.");
-        System.out.println("2. Exit program.");
+        System.out.println("2. Kill random actor.");
+        System.out.println("3. Exit program.");
     }
 
     private UserChoice getUserChoice() {
@@ -74,6 +75,8 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
         }
         if (choice == UserChoice.EXIT_PROGRAM.ordinal() + 1)
             return UserChoice.EXIT_PROGRAM;
+        else if (choice == UserChoice.KILL_RANDOM_ACTOR.ordinal() + 1)
+            return UserChoice.KILL_RANDOM_ACTOR;
         else if (choice == UserChoice.SEARCH_PATH.ordinal() + 1)
             return UserChoice.SEARCH_PATH;
         else
@@ -88,6 +91,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
 
     enum UserChoice {
         SEARCH_PATH,
+        KILL_RANDOM_ACTOR,
         EXIT_PROGRAM,
         UNDEFINED_USER_CHOICE
 
@@ -102,6 +106,9 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
                     isInput = true;
                     context().self().tell(new SearchPathInfoQuery(getUserTextToFind()), context().self());
                     break;
+                case KILL_RANDOM_ACTOR:
+                    killRandomActor();
+                    break;
                 case EXIT_PROGRAM:
                     System.exit(0);
                     break;
@@ -110,6 +117,14 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
             }
         }
 
+    }
+
+    private void killRandomActor() {
+        Random rnd = new Random();
+        int routeesCount = router.routees().size();
+        Routee routeeToKill = router.routees().apply(rnd.nextInt() % routeesCount);
+        router.removeRoutee(routeeToKill);
+        routeeToKill.send(Kill.getInstance(), getSelf());
     }
 
     {
