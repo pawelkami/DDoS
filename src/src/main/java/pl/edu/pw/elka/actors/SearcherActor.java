@@ -27,15 +27,15 @@ public class SearcherActor extends AbstractActor {
         }
     }
 
-    private SearcherActor(String url, String htmlElementType, String htmlElementValue) {
+    private SearcherActor(String url, String htmlElementType, String propertyName, String propertyValue) {
         dbActor = getContext().actorOf(DatabaseActor.props());
-        crawlerActor = getContext().actorOf(CrawlerActor.props(url, htmlElementType, htmlElementValue));
+        crawlerActor = getContext().actorOf(CrawlerActor.props(url, htmlElementType, propertyName, propertyValue));
         crawlerActor.tell(new CrawlerStarter(), getSelf()); // uruchamiamy crawlera
         log.debug("Created Searcher for website {}", url);
     }
 
-    static Props props(String url, String htmlElementType, String htmlElementValue) {
-        return Props.create(SearcherActor.class, () -> new SearcherActor(url, htmlElementType, htmlElementValue));
+    static Props props(String url, String htmlElementType, String propertyName, String propertyValue) {
+        return Props.create(SearcherActor.class, () -> new SearcherActor(url, htmlElementType, propertyName, propertyValue));
     }
 
     private void handlePathInfoQuery(SearchPathInfoQuery query) {

@@ -1,12 +1,14 @@
 [
   {
-    "url" : "http://google.pl",
+    "url" : "https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park",
     "htmlTagType": "div",
-    "htmlTagValue": "value"
+	"propertyName": "class",
+    "propertyValue": "main-content"
   },
   {
     "url" : "http://google2.pl",
     "htmlTagType": "div2",
-    "htmlTagValue": "value2"
+    "propertyName": "class2",
+    "propertyValue": "value2"
   }
 ]

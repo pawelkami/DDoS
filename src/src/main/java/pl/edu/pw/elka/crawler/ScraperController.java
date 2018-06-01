@@ -6,15 +6,17 @@ import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import edu.uci.ics.crawler4j.url.WebURL;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ScraperController {
 
-    public void crawl(String url, String tagType, String tagValue) throws Exception {
+    public List<String> crawl(String url, String tagType, String propName, String propValue) throws Exception {
 
         /*
          * liczba crawlerow
          */
-        int numberOfCrawlers = 10;
+        int numberOfCrawlers = 2;
 
         CrawlConfig config = new CrawlConfig();
 
@@ -77,22 +79,21 @@ public class ScraperController {
          */
         controller.start(UrlScraper.class, numberOfCrawlers);
 
+        List<String> scrapedContents = new ArrayList<String>();
 
         if(!UrlScraper.scrapedUrls.isEmpty()) {
             Crawler crawler = new Crawler();
-//            Integer it = 1;
             WebURL webUrl = new WebURL();
             webUrl.setURL(url);
             try {
                 for(String scrapedUrl : UrlScraper.scrapedUrls.get(webUrl.getDomain())) {
                     crawler.get(scrapedUrl);
 
-                    String xpath = "//" + tagType + "[@" + tagValue.substring(0, tagValue.indexOf('=')) + "='" + tagValue.substring(tagValue.indexOf('=') + 1) + "']";
+                    String xpath = "//" + tagType + "[@" + propName + "='" + propValue + "']";
                     String content = crawler.getContentByXpath(xpath);
 
-                    System.out.println(content);
-//                crawler.saveScreenshot("D:\\selenium_wp_" + it.toString() + ".png");
-//                it += 1;
+                    scrapedContents.add(content);
+//                    System.out.println(content);
                 }
             } catch (NullPointerException e) {
             }
@@ -100,10 +101,11 @@ public class ScraperController {
             crawler.closeWebDriver();
         }
 
+        return scrapedContents;
     }
 
     public static void main(String[] args) throws Exception {
         ScraperController scraper = new ScraperController();
-        scraper.crawl("https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park", "div", "class=main-content");
+        scraper.crawl("https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park", "div", "class", "main-content");
     }
 }

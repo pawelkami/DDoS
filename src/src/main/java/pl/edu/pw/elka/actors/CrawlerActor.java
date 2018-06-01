@@ -3,6 +3,10 @@ package pl.edu.pw.elka.actors;
 import akka.actor.AbstractActor;
 import akka.actor.Props;
 import pl.edu.pw.elka.actors.NLPActor.TextToClassify;
+import pl.edu.pw.elka.crawler.ScraperController;
+
+import java.util.List;
+import java.util.ArrayList;
 
 import static pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
 
@@ -10,7 +14,8 @@ public class CrawlerActor extends AbstractActor {
 
     final String url;
     final String htmlElementType;
-    final String htmlElementValue;
+    final String propertyName;
+    final String propertyValue;
 
     /**
      * Wiadomość startująca działanie crawlera.
@@ -19,14 +24,15 @@ public class CrawlerActor extends AbstractActor {
 
     }
 
-    private CrawlerActor(String url, String htmlElementType, String htmlElementValue) {
+    private CrawlerActor(String url, String htmlElementType, String propertyName, String propertyValue) {
         this.url = url;
         this.htmlElementType = htmlElementType;
-        this.htmlElementValue = htmlElementValue;
+        this.propertyName = propertyName;
+        this.propertyValue = propertyValue;
     }
 
-    static Props props(String url, String htmlElementType, String htmlElementValue) {
-        return Props.create(CrawlerActor.class, () -> new CrawlerActor(url, htmlElementType, htmlElementValue));
+    static Props props(String url, String htmlElementType, String propertyName, String propertyValue) {
+        return Props.create(CrawlerActor.class, () -> new CrawlerActor(url, htmlElementType, propertyName, propertyValue));
     }
 
     private void searchDocuments() {
@@ -34,10 +40,19 @@ public class CrawlerActor extends AbstractActor {
         //while (true) {
             // TODO szukamy dokumentów i je wysyłamy, reszta sama się już stanie - agent sam dostanie już wiadomość zwrotną asynchronicznie jeśli tekst był poprawny
 
-            String text = "";
-            // wysyłamy jako nasz rodzic, żeby wiadomość została zwrócona do naszego rodzica a nie do nas
-            getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getContext().getParent());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
+            ScraperController controller = new ScraperController();
+            List<String> foundTexts = null;
 
+            try {
+                foundTexts = new ArrayList<String>(controller.crawl(this.url, this.htmlElementType, this.propertyName, this.propertyValue));
+            } catch (Exception e) {
+                foundTexts = new ArrayList<String>();
+            }
+
+            for(String text : foundTexts) {
+                // wysyłamy jako nasz rodzic, żeby wiadomość została zwrócona do naszego rodzica a nie do nas
+                getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getContext().getParent());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
+            }
         //}
     }
 

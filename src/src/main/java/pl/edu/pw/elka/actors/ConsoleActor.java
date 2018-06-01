@@ -182,7 +182,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
             ConfigParser configParser = new ConfigParser(Objects.requireNonNull(getClass().getClassLoader().getResource("config.json")).getPath());
             for (Object o : configParser.getAttributesList()) {
                 JSONObject jsonObj = (JSONObject) o;
-                ActorRef r = getContext().actorOf(SearcherActor.props((String) jsonObj.get("url"), (String) jsonObj.get("htmlTagType"), (String) jsonObj.get("htmlTagValue")));
+                ActorRef r = getContext().actorOf(SearcherActor.props((String) jsonObj.get("url"), (String) jsonObj.get("htmlTagType"), (String) jsonObj.get("propertyName"), (String) jsonObj.get("propertyValue")));
                 getContext().watch(r);
                 routees.add(new ActorRefRoutee(r));
             }
