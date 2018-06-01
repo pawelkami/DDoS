@@ -45,17 +45,32 @@ public class NLP {
     private WordVectors glovewordvectors;
 
     private static final Logger log = LoggerFactory.getLogger(NLP.class);
+    private static volatile NLP instance = null;
 
-//    private final String URL = "http://nlp.stanford.edu/data/glove.6B.zip";
+    public static NLP getInstance() {
+        if (instance == null) {
+            synchronized (NLP.class) {
+                if (instance == null) {
+                    instance = new NLP();
+                }
+            }
+        }
+        return instance;
+    }
 
-    public NLP() throws IOException {
+    private NLP() {
         tokenizerFactory = new DefaultTokenizerFactory();
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
 
         nlpUtils = new NLPUtils();
 
-        File resource = new ClassPathResource("glove.6B.50d.txt").getFile();
-        glovewordvectors =  WordVectorSerializer.loadTxtVectors(resource);
+        try {
+            File resource = new ClassPathResource("glove.6B.50d.txt").getFile();
+            glovewordvectors =  WordVectorSerializer.loadTxtVectors(resource);
+        } catch (IOException e) {
+            // TODO obsługa? lub może trzeba rzucić na zewnątrz
+            e.printStackTrace();
+        }
     }
 
     private void downloadGloveData() {
