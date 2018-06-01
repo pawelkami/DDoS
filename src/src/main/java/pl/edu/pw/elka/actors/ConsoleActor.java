@@ -10,7 +10,7 @@ import akka.routing.Routee;
 import akka.routing.Router;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.ParseException;
-import pl.edu.pw.elka.actors.SearcherAgent.SearchPathInfoQuery;
+import pl.edu.pw.elka.actors.SearcherActor.SearchPathInfoQuery;
 import pl.edu.pw.elka.utils.ConfigParser;
 import scala.concurrent.duration.FiniteDuration;
 
@@ -182,7 +182,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
             ConfigParser configParser = new ConfigParser(Objects.requireNonNull(getClass().getClassLoader().getResource("config.json")).getPath());
             for (Object o : configParser.getAttributesList()) {
                 JSONObject jsonObj = (JSONObject) o;
-                ActorRef r = getContext().actorOf(SearcherAgent.props((String) jsonObj.get("url"), (String) jsonObj.get("htmlTagType"), (String) jsonObj.get("htmlTagValue")));
+                ActorRef r = getContext().actorOf(SearcherActor.props((String) jsonObj.get("url"), (String) jsonObj.get("htmlTagType"), (String) jsonObj.get("htmlTagValue")));
                 getContext().watch(r);
                 routees.add(new ActorRefRoutee(r));
             }

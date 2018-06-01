@@ -4,7 +4,7 @@ import akka.actor.AbstractActor;
 import akka.actor.Props;
 import pl.edu.pw.elka.actors.ConsoleActor.PathInfoResponse;
 import pl.edu.pw.elka.actors.NLPActor.TextWithQuery;
-import pl.edu.pw.elka.actors.SearcherAgent.SearchPathInfoQuery;
+import pl.edu.pw.elka.actors.SearcherActor.SearchPathInfoQuery;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,9 +9,9 @@ import pl.edu.pw.elka.actors.ConsoleActor.PathInfoResponse;
 import pl.edu.pw.elka.actors.CrawlerActor.CrawlerStarter;
 import pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
 
-public class SearcherAgent extends AbstractActor {
+public class SearcherActor extends AbstractActor {
 
-    private static final Logger log = LoggerFactory.getLogger(SearcherAgent.class);
+    private static final Logger log = LoggerFactory.getLogger(SearcherActor.class);
 
     private ActorRef dbActor;
     private ActorRef crawlerActor;
@@ -27,7 +27,7 @@ public class SearcherAgent extends AbstractActor {
         }
     }
 
-    private SearcherAgent(String url, String htmlElementType, String htmlElementValue) {
+    private SearcherActor(String url, String htmlElementType, String htmlElementValue) {
         dbActor = getContext().actorOf(DatabaseActor.props());
         crawlerActor = getContext().actorOf(CrawlerActor.props(url, htmlElementType, htmlElementValue));
         crawlerActor.tell(new CrawlerStarter(), getSelf()); // uruchamiamy crawlera
@@ -35,7 +35,7 @@ public class SearcherAgent extends AbstractActor {
     }
 
     static Props props(String url, String htmlElementType, String htmlElementValue) {
-        return Props.create(SearcherAgent.class, () -> new SearcherAgent(url, htmlElementType, htmlElementValue));
+        return Props.create(SearcherActor.class, () -> new SearcherActor(url, htmlElementType, htmlElementValue));
     }
 
     private void handlePathInfoQuery(SearchPathInfoQuery query) {
