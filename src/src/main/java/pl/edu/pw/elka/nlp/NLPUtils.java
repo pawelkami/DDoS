@@ -17,6 +17,10 @@ public class NLPUtils {
 
     private List<String> stopwords;
 
+    public List<String> getStopwords(){
+        return stopwords;
+    }
+
     private void loadStopwords()
     {
         File file = new File(Objects.requireNonNull(getClass().getClassLoader().getResource("stopwords.txt")).getFile());

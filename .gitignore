@@ -26,3 +26,6 @@ hs_err_pid*
 */target/*
 .idea
 paravec
+/src/src/main/resources/GoogleNews-vectors-negative300.bin.gz
+/src/src/main/resources/glove.6B.300d.txt
+/src/src/main/resources/glove.6B.50d.txt
