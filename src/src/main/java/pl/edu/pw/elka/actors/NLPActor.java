@@ -97,7 +97,6 @@ public class NLPActor extends AbstractActor {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     @Override

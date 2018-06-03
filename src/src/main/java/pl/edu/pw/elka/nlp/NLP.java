@@ -25,6 +25,7 @@ import org.deeplearning4j.text.tokenization.tokenizer.preprocessor.CommonPreproc
 import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFactory;
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.exception.ND4JIllegalStateException;
 import org.nd4j.linalg.io.ClassPathResource;
 import org.nd4j.linalg.primitives.Pair;
 import org.slf4j.Logger;
@@ -85,7 +86,7 @@ public class NLP {
 
         nlpUtils = new NLPUtils();
 
-        File resource = new ClassPathResource("glove.6B.300d.txt").getFile();
+        File resource = new ClassPathResource("glove.6B.50d.txt").getFile();
         gloveWordVectors = WordVectorSerializer.loadTxtVectors(resource);
 
         // construct the URL to the Wordnet dictionary directory
@@ -215,16 +216,17 @@ public class NLP {
         LabelledDocument document = new LabelledDocument();
         document.setContent(text);
         System.out.println(text);
-        INDArray documentAsCentroid = meansBuilder.documentAsVector(document);
-        List<Pair<String, Double>> scores = seeker.getScores(documentAsCentroid);
-
-
+        try {
+            INDArray documentAsCentroid = meansBuilder.documentAsVector(document);
+            List<Pair<String, Double>> scores = seeker.getScores(documentAsCentroid);
+            return scores;
+        } catch (ND4JIllegalStateException e) {
+            return null;
+        }
 //        log.debug("Document '" + document.getLabels() + "' falls into the following categories: ");
 //        for (Pair<String, Double> score : scores) {
 //            log.debug("        " + score.getFirst() + ": " + score.getSecond());
 //        }
-
-        return scores;
     }
 
 

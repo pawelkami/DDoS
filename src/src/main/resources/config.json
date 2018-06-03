@@ -6,9 +6,9 @@
     "propertyValue": "main-content"
   },
   {
-    "url" : "http://google2.pl",
-    "htmlTagType": "div2",
-    "propertyName": "class2",
-    "propertyValue": "value2"
+    "url" : "http://www.cycling-challenge.com/",
+    "htmlTagType": "div",
+    "propertyName": "class",
+    "propertyValue": "post-content description"
   }
 ]
