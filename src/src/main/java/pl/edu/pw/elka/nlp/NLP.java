@@ -12,6 +12,7 @@ package pl.edu.pw.elka.nlp;
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.*;
+import org.bytedeco.javacv.FrameFilter;
 import org.deeplearning4j.models.embeddings.inmemory.InMemoryLookupTable;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -50,6 +51,9 @@ public class NLP {
     private IDictionary dict;
     private int maxDepth = 2;
 
+    // model name
+    private String modelName = "model1.zip";
+
     private static final Logger log = LoggerFactory.getLogger(NLP.class);
     private static volatile NLP instance = null;
 
@@ -62,6 +66,29 @@ public class NLP {
             }
         }
         return instance;
+    }
+
+    class MyDocument {
+        String document;
+        HashMap<String, Integer> wordsInDocument;
+        int wordCounter;
+        double rating;
+        boolean isInCategory = false;
+
+        @Override
+        public String toString() {
+            return "wordsInDocument = " + wordsInDocument + " \n\t with rating = " + rating;
+        }
+    }
+
+    private class MyDocumentCounter {
+        int wordCounter;
+        int documentCounter;
+
+        @Override
+        public String toString() {
+            return "wordCounter = " + wordCounter + " \t with documentCounter = " + documentCounter;
+        }
     }
 
     private NLP() throws IOException {
@@ -104,12 +131,14 @@ public class NLP {
 //        synonyms = nlp.findSynonyms(sss);
 //        System.out.println(synonyms);
 
-////        nlp.createNewModel("model1.zip");
+//        nlp.createNewModel(nlp.modelName);
 
 
         Path unlabeled_path = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c1.txt");
         String stringFromFile = java.nio.file.Files.lines(unlabeled_path).collect(Collectors.joining());
-////        nlp.checkNewTextSimilarityToModel("model1.zip", stringFromFile);
+        Path unlabeled_path2 = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c2.txt");
+        String stringFromFile2 = java.nio.file.Files.lines(unlabeled_path2).collect(Collectors.joining());
+        nlp.checkNewTextSimilarityToModel(stringFromFile);
 ////
 ////        Path baseText = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\labeled_corpuses\\cycling\\col-de-crozet.txt");
 ////        String stringFromFile2 = java.nio.file.Files.lines(baseText).collect(Collectors.joining());
@@ -118,7 +147,13 @@ public class NLP {
 //
 //
 //        HashMap<String, Integer> a = nlp.countWordsInDoc(stringFromFile);
-        double sim = nlp.checkTwoTextsSimilarity(stringFromFile, "Cycling paths col de crozet Zmutt");
+//        double sim = nlp.checkTwoTextsSimilarity(stringFromFile, "Cycling paths col de crozet Zmutt");
+
+
+        List<String> d = new ArrayList<>();
+        d.add(stringFromFile2);
+        d.add(stringFromFile);
+        List<MyDocument> sim = nlp.checkTextsSimilarity(d, "cycling in zmutt");
         System.out.println(sim);
     }
 
@@ -148,7 +183,7 @@ public class NLP {
         vec.fit();
 
         // Save model
-        final String path = new ClassPathResource("model1.zip").getFile().getAbsolutePath();
+        final String path = new ClassPathResource(modelFileName).getFile().getAbsolutePath();
         WordVectorSerializer.writeParagraphVectors(vec, path);
 
         // Save labels of model
@@ -162,17 +197,24 @@ public class NLP {
 
     }
 
-    void checkNewTextSimilarityToModel(String locationToLoadModel, String text) throws Exception {
-        List<String> labels = new ArrayList<>();
+    public List<Pair<String, Double>> checkNewTextSimilarityToModel(String text) throws IOException {
+        List<String> labels = new ArrayList<String>();
 
         try (Stream<String> stream = Files.lines(Paths.get("labels.txt"))) {
             labels = stream.collect(Collectors.toList());
+
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         if (vec == null) {
-            vec = WordVectorSerializer.readParagraphVectors(locationToLoadModel);
+            try {
+                final String path = new ClassPathResource(modelName).getFile().getAbsolutePath();
+                log.info(path);
+                vec = WordVectorSerializer.readParagraphVectors(path);
+            } catch (IOException e) {
+                createNewModel(modelName);
+            }
         }
 
         MeansBuilder meansBuilder = new MeansBuilder(
@@ -182,19 +224,146 @@ public class NLP {
 
         LabelledDocument document = new LabelledDocument();
         document.setContent(text);
+        System.out.println(text);
         INDArray documentAsCentroid = meansBuilder.documentAsVector(document);
         List<Pair<String, Double>> scores = seeker.getScores(documentAsCentroid);
 
 
-        log.info("Document '" + document.getLabels() + "' falls into the following categories: ");
-        for (Pair<String, Double> score : scores) {
-            log.info("        " + score.getFirst() + ": " + score.getSecond());
-        }
+//        log.info("Document '" + document.getLabels() + "' falls into the following categories: ");
+//        for (Pair<String, Double> score : scores) {
+//            log.info("        " + score.getFirst() + ": " + score.getSecond());
+//        }
+
+        return scores;
     }
 
-    double checkTwoTextsSimilarity(String BaseText, String searchedQuery) throws IOException {
+
+    public List<MyDocument> checkTextsSimilarity(List<String> documents, String searchedQuery) throws Exception {
+        log.info("Start checking similarity of all texts");
+
+        Set<String> tokenizedQuery = new HashSet<>(nlpUtils.removeStopWords(nlpUtils.tokenize(searchedQuery.toLowerCase())));
+        Set<String> tokenizedQuerySynonyms = findSynonyms(tokenizedQuery);
+        HashMap<String, Double> tokenizedQuerySimilarWords = findSimilarWords(tokenizedQuery, 15);
+        tokenizedQuery = nlpUtils.stem(tokenizedQuery);
+        tokenizedQuerySynonyms = nlpUtils.stem(tokenizedQuerySynonyms);
+        // remove doubles
+        tokenizedQuerySynonyms.removeAll(tokenizedQuery);
+        for (String toRemove : tokenizedQuery) {
+            tokenizedQuerySimilarWords.remove(toRemove);
+        }
+        for (String toRemove : tokenizedQuerySynonyms) {
+            tokenizedQuerySimilarWords.remove(toRemove);
+        }
+
+        List<MyDocument> listOfTextsWords = new ArrayList<>();
+
+
+        for (String document : documents) {
+            MyDocument newDoc = new MyDocument();
+            newDoc.document = document;
+            newDoc.wordsInDocument = countWordsInDoc(document.toLowerCase());
+            newDoc.wordsInDocument.forEach((key, value) -> {
+                newDoc.wordCounter += value;
+            });
+
+            List<Pair<String, Double>> classify = checkNewTextSimilarityToModel(document);
+            Optional<Pair<String, Double>> max = classify.stream().findFirst();
+            for (Pair<String, Double> pair : classify) {
+                if (pair.getSecond() > max.get().getSecond()) {
+                    max = Optional.of(pair);
+                }
+            }
+            if (max.isPresent()) {
+                Pair<String, Double> maxValue = max.get();
+                switch (maxValue.getFirst()) {
+                    case "cycling":
+                        if (tokenizedQuery.contains("cycl") || tokenizedQuery.contains("bike")) {
+                            newDoc.isInCategory = true;
+                        }
+                        break;
+                    case "hiking":
+                        if (tokenizedQuery.contains("hike")) {
+                            newDoc.isInCategory = true;
+                        }
+                        break;
+                    case "running":
+                        if (tokenizedQuery.contains("run")) {
+                            newDoc.isInCategory = true;
+                        }
+                        break;
+                }
+            }
+            listOfTextsWords.add(newDoc);
+        }
+
+//        log.info("listOfTextsWords = " + listOfTextsWords);
+
+        HashMap<String, MyDocumentCounter> wordsInAllDocuments = new HashMap<>();
+
+        for (MyDocument documentWordMap : listOfTextsWords) {
+            for (String word : documentWordMap.wordsInDocument.keySet()) {
+                if (wordsInAllDocuments.containsKey(word)) {
+                    MyDocumentCounter myDocumentCounter = wordsInAllDocuments.get(word);
+                    myDocumentCounter.documentCounter += 1;
+                    myDocumentCounter.wordCounter += documentWordMap.wordsInDocument.get(word);
+                    wordsInAllDocuments.put(word, myDocumentCounter);
+                } else {
+                    MyDocumentCounter myDocumentCounter = new MyDocumentCounter();
+                    myDocumentCounter.documentCounter = 1;
+                    myDocumentCounter.wordCounter += documentWordMap.wordsInDocument.get(word);
+                    wordsInAllDocuments.put(word, myDocumentCounter);
+                }
+            }
+        }
+
+//        log.info("wordsInAllDocuments = " + wordsInAllDocuments);
+
+        for (String tokenQuery : tokenizedQuery) {
+            for (MyDocument document : listOfTextsWords) {
+                if (document.wordsInDocument.keySet().contains(tokenQuery)) {
+//                    double tf = document.wordsInDocument.get(tokenQuery) / document.wordCounter;
+                    double tf = document.wordsInDocument.get(tokenQuery);
+                    int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuery).documentCounter;
+                    double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
+                    double tfIdf = tf * idf;
+                    document.rating += tfIdf;
+                }
+            }
+        }
+
+        for (String tokenQuerySynonyms : tokenizedQuerySynonyms) {
+            for (MyDocument document : listOfTextsWords) {
+                if (document.wordsInDocument.keySet().contains(tokenQuerySynonyms)) {
+//                    double tf = document.wordsInDocument.get(tokenQuery) / document.wordCounter;
+                    double tf = document.wordsInDocument.get(tokenQuerySynonyms);
+                    int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuerySynonyms).documentCounter;
+                    double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
+                    double tfIdf = tf * idf;
+                    document.rating += 0.5*tfIdf;
+                }
+            }
+        }
+
+        for (String tokenQuerySimilarWords : tokenizedQuerySimilarWords.keySet()) {
+            for (MyDocument document : listOfTextsWords) {
+                if (document.wordsInDocument.keySet().contains(tokenQuerySimilarWords)) {
+//                    double tf = document.wordsInDocument.get(tokenQuery) / document.wordCounter;
+                    double tf = document.wordsInDocument.get(tokenQuerySimilarWords);
+                    int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuerySimilarWords).documentCounter;
+                    double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
+                    double tfIdf = tf * idf;
+                    document.rating += 0.3*tfIdf * tokenizedQuerySimilarWords.get(tokenQuerySimilarWords);
+                }
+            }
+        }
+
+
+        return listOfTextsWords;
+    }
+
+    public double checkTwoTextsSimilarity(String baseText, String searchedQuery) {
         log.info("Start checking similarity of two texts");
-//        Collection<String> label1 = nlpUtils.convertStringToVector(BaseText);
+//        Collection<String> label1 = nlpUtils.convertStringToVector(baseText);
 //        Collection<String> label2 = nlpUtils.convertStringToVector(searchedQuery);
 //
 //        return Transforms.cosineSim(gloveWordVectors.getWordVectorsMean(label1), gloveWordVectors.getWordVectorsMean(label2));
@@ -214,7 +383,7 @@ public class NLP {
             tokenizedQuerySimilarWords.remove(toRemove);
         }
 
-        HashMap<String, Integer> documentWordsMap = countWordsInDoc(BaseText.toLowerCase());
+        HashMap<String, Integer> documentWordsMap = countWordsInDoc(baseText.toLowerCase());
 
         HashMap<String, Integer> foundTokensQuery = new HashMap<>();
         for (String tokenInQuery : tokenizedQuery) {
@@ -256,7 +425,7 @@ public class NLP {
             sumTokensQuerySimilarWords[0] += Math.log1p(value) * tokenizedQuerySimilarWords.get(key);
         });
 
-        double result = sumTokensQuery[0] + 0.4*sumTokensQuerySynonyms[0] + 0.4*sumTokensQuerySimilarWords[0];
+        double result = sumTokensQuery[0] + 0.4 * sumTokensQuerySynonyms[0] + 0.4 * sumTokensQuerySimilarWords[0];
         return result;
     }
 
