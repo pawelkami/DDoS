@@ -6,22 +6,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pl.edu.pw.elka.actors.ConsoleActor.PathInfoResponse;
 import pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
+import pl.edu.pw.elka.nlp.MyDocument;
 import pl.edu.pw.elka.nlp.NLP;
 import org.nd4j.linalg.primitives.Pair;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.*;
 
 public class NLPActor extends AbstractActor {
+    private final static double MINIMUM_RATING = 0.5;
+
     private static final Logger log = LoggerFactory.getLogger(NLPActor.class);
 
     static class TextWithQuery {
-//        final List<String> texts;
-        final List<PathInfoRecord> texts;
+        final List<String> texts;
         final String query;
 
-        TextWithQuery(List<PathInfoRecord> text, String query) {
-//            this.texts = texts;
+        TextWithQuery(List<String> text, String query) {
             this.texts = text;
             this.query = query;
         }
@@ -42,16 +43,27 @@ public class NLPActor extends AbstractActor {
     /**
      * Funkcja sprawdza czy tekst ścieżki zgadza się z zapytaniem. Jeśli tak to wysyła wiadomość PathInfoResponse.
      * Jest to wiadomość od Searchera (a wcześniej od użytkownika).
+     *
      * @param textWithQuery
      */
     private void analyseQuery(TextWithQuery textWithQuery) {
         try {
             NLP nlp = NLP.getInstance();
+            List<MyDocument> texts = nlp.checkTextsSimilarity(textWithQuery.texts, textWithQuery.query);
+            Collections.sort(texts);
+            ListIterator li = texts.listIterator(texts.size());
+            while (li.hasPrevious()) {
+                MyDocument doc = (MyDocument) li.previous();
+                if (doc.rating > MINIMUM_RATING) {
+                    getContext().sender().tell(new PathInfoResponse(doc.document), getSelf());
+                } else {
+                    break;
+                }
+            }
         } catch (IOException e) {
             log.error("Some of resources are not initialized.");
             e.printStackTrace();
         }
-        String text = "a";
 
         // TODO jeśli spełnia zapytanie to wysyłamy zwrotnie wiadomość z tekstem, w przeciwnym przypadku nic nie robimy
         //if(true)
@@ -60,6 +72,7 @@ public class NLPActor extends AbstractActor {
 
     /**
      * Wiadomość od crawlera.
+     *
      * @param text
      */
     private void classifyText(TextToClassify text) {
@@ -79,11 +92,9 @@ public class NLPActor extends AbstractActor {
                 }
             }
             log.info("Best found classifier is " + best);
-            if(best != null && best.getSecond() >= 0.4)
+            if (best != null && best.getSecond() >= 0.6)
                 getContext().sender().tell(new PathInfoRecord(text.text), getSelf());
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
             e.printStackTrace();
         }
 

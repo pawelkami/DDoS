@@ -68,18 +68,6 @@ public class NLP {
         return instance;
     }
 
-    class MyDocument {
-        String document;
-        HashMap<String, Integer> wordsInDocument;
-        int wordCounter;
-        double rating;
-        boolean isInCategory = false;
-
-        @Override
-        public String toString() {
-            return "wordsInDocument = " + wordsInDocument + " \n\t with rating = " + rating;
-        }
-    }
 
     private class MyDocumentCounter {
         int wordCounter;
@@ -111,50 +99,52 @@ public class NLP {
     }
 
     public static void main(String[] args) throws Exception {
-        NLP nlp = new NLP();
-
+//        NLP nlp = new NLP();
 //
-//        HashMap<String, Double> similarWords = nlp.findSimilarWords(s, 15);
-//        System.out.println(similarWords);
-
-//        nlp.checkTwoTextsSimilarity("aaa", "cycle");
-
-
-//        Set<String> sss = new HashSet<>();
-//        String asd = nlp.nlpUtils.stem("cycle");
-//        System.out.println(asd);
-//        sss.add(asd);
-//
-//        similarWords = nlp.findSimilarWords(sss, 15);
-//        System.out.println(similarWords);
-//
-//        synonyms = nlp.findSynonyms(sss);
-//        System.out.println(synonyms);
-
-//        nlp.createNewModel(nlp.modelName);
-
-
-        Path unlabeled_path = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c1.txt");
-        String stringFromFile = java.nio.file.Files.lines(unlabeled_path).collect(Collectors.joining());
-        Path unlabeled_path2 = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c2.txt");
-        String stringFromFile2 = java.nio.file.Files.lines(unlabeled_path2).collect(Collectors.joining());
-        nlp.checkNewTextSimilarityToModel(stringFromFile);
 ////
-////        Path baseText = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\labeled_corpuses\\cycling\\col-de-crozet.txt");
-////        String stringFromFile2 = java.nio.file.Files.lines(baseText).collect(Collectors.joining());
-////        Double result = nlp.checkTwoTextsSimilarity(stringFromFile2, "cycling near Col de la Faucille");
-////        System.out.println(result);
+////        HashMap<String, Double> similarWords = nlp.findSimilarWords(s, 15);
+////        System.out.println(similarWords);
+//
+////        nlp.checkTwoTextsSimilarity("aaa", "cycle");
 //
 //
-//        HashMap<String, Integer> a = nlp.countWordsInDoc(stringFromFile);
-//        double sim = nlp.checkTwoTextsSimilarity(stringFromFile, "Cycling paths col de crozet Zmutt");
+////        Set<String> sss = new HashSet<>();
+////        String asd = nlp.nlpUtils.stem("cycle");
+////        System.out.println(asd);
+////        sss.add(asd);
+////
+////        similarWords = nlp.findSimilarWords(sss, 15);
+////        System.out.println(similarWords);
+////
+////        synonyms = nlp.findSynonyms(sss);
+////        System.out.println(synonyms);
+//
+////        nlp.createNewModel(nlp.modelName);
+//
+//
+//        Path unlabeled_path = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c1.txt");
+//        String stringFromFile = java.nio.file.Files.lines(unlabeled_path).collect(Collectors.joining());
+//        Path unlabeled_path2 = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c2.txt");
+//        String stringFromFile2 = java.nio.file.Files.lines(unlabeled_path2).collect(Collectors.joining());
+//        nlp.checkNewTextSimilarityToModel(stringFromFile);
+//////
+//////        Path baseText = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\labeled_corpuses\\cycling\\col-de-crozet.txt");
+//////        String stringFromFile2 = java.nio.file.Files.lines(baseText).collect(Collectors.joining());
+//////        Double result = nlp.checkTwoTextsSimilarity(stringFromFile2, "cycling near Col de la Faucille");
+//////        System.out.println(result);
+////
+////
+////        HashMap<String, Integer> a = nlp.countWordsInDoc(stringFromFile);
+////        double sim = nlp.checkTwoTextsSimilarity(stringFromFile, "Cycling paths col de crozet Zmutt");
+//
+//
+//        List<String> d = new ArrayList<>();
+//        d.add(stringFromFile2);
+//        d.add(stringFromFile);
+//        List<MyDocument> sim = nlp.checkTextsSimilarity(d, "cycling in zmutt");
+//        System.out.println(sim);
 
 
-        List<String> d = new ArrayList<>();
-        d.add(stringFromFile2);
-        d.add(stringFromFile);
-        List<MyDocument> sim = nlp.checkTextsSimilarity(d, "cycling in zmutt");
-        System.out.println(sim);
     }
 
     void createNewModel(String modelFileName) throws IOException {
@@ -210,7 +200,7 @@ public class NLP {
         if (vec == null) {
             try {
                 final String path = new ClassPathResource(modelName).getFile().getAbsolutePath();
-                log.info(path);
+                log.debug(path);
                 vec = WordVectorSerializer.readParagraphVectors(path);
             } catch (IOException e) {
                 createNewModel(modelName);
@@ -229,17 +219,17 @@ public class NLP {
         List<Pair<String, Double>> scores = seeker.getScores(documentAsCentroid);
 
 
-//        log.info("Document '" + document.getLabels() + "' falls into the following categories: ");
+//        log.debug("Document '" + document.getLabels() + "' falls into the following categories: ");
 //        for (Pair<String, Double> score : scores) {
-//            log.info("        " + score.getFirst() + ": " + score.getSecond());
+//            log.debug("        " + score.getFirst() + ": " + score.getSecond());
 //        }
 
         return scores;
     }
 
 
-    public List<MyDocument> checkTextsSimilarity(List<String> documents, String searchedQuery) throws Exception {
-        log.info("Start checking similarity of all texts");
+    public List<MyDocument> checkTextsSimilarity(List<String> documents, String searchedQuery) throws IOException {
+        log.debug("Start checking similarity of all texts");
 
         Set<String> tokenizedQuery = new HashSet<>(nlpUtils.removeStopWords(nlpUtils.tokenize(searchedQuery.toLowerCase())));
         Set<String> tokenizedQuerySynonyms = findSynonyms(tokenizedQuery);
@@ -296,7 +286,7 @@ public class NLP {
             listOfTextsWords.add(newDoc);
         }
 
-//        log.info("listOfTextsWords = " + listOfTextsWords);
+//        log.debug("listOfTextsWords = " + listOfTextsWords);
 
         HashMap<String, MyDocumentCounter> wordsInAllDocuments = new HashMap<>();
 
@@ -316,7 +306,7 @@ public class NLP {
             }
         }
 
-//        log.info("wordsInAllDocuments = " + wordsInAllDocuments);
+//        log.debug("wordsInAllDocuments = " + wordsInAllDocuments);
 
         for (String tokenQuery : tokenizedQuery) {
             for (MyDocument document : listOfTextsWords) {
@@ -362,7 +352,7 @@ public class NLP {
     }
 
     public double checkTwoTextsSimilarity(String baseText, String searchedQuery) {
-        log.info("Start checking similarity of two texts");
+        log.debug("Start checking similarity of two texts");
 //        Collection<String> label1 = nlpUtils.convertStringToVector(baseText);
 //        Collection<String> label2 = nlpUtils.convertStringToVector(searchedQuery);
 //
@@ -391,7 +381,7 @@ public class NLP {
                 foundTokensQuery.put(tokenInQuery, documentWordsMap.get(tokenInQuery));
             }
         }
-        log.info("foundTokensQuery = " + foundTokensQuery);
+        log.debug("foundTokensQuery = " + foundTokensQuery);
 
 
         HashMap<String, Integer> foundTokensQuerySynonyms = new HashMap<>();
@@ -400,7 +390,7 @@ public class NLP {
                 foundTokensQuerySynonyms.put(tokenInQuery, documentWordsMap.get(tokenInQuery));
             }
         }
-        log.info("foundTokensQuerySynonyms  = " + foundTokensQuerySynonyms);
+        log.debug("foundTokensQuerySynonyms  = " + foundTokensQuerySynonyms);
 
         HashMap<String, Integer> foundTokensQuerySimilarWords = new HashMap<>();
         for (String tokenInQuery : tokenizedQuerySimilarWords.keySet()) {
@@ -408,7 +398,7 @@ public class NLP {
                 foundTokensQuerySimilarWords.put(tokenInQuery, documentWordsMap.get(tokenInQuery));
             }
         }
-        log.info("foundTokensQuerySimilarWords = " + foundTokensQuerySimilarWords);
+        log.debug("foundTokensQuerySimilarWords = " + foundTokensQuerySimilarWords);
 
         final double[] sumTokensQuery = {0};
         foundTokensQuery.forEach((key, value) -> {
@@ -515,3 +505,4 @@ public class NLP {
         return result;
     }
 }
+

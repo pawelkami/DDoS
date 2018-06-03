@@ -31,10 +31,10 @@ public class DatabaseActor extends AbstractActor {
     }
 
     private void addToDatabase(PathInfoRecord record) {
-        paths.add(record);
+        paths.add(record.pathDescription);
     }
 
-    private List<PathInfoRecord> paths;
+    private List<String> paths;
 
     private DatabaseActor() {
         paths = new ArrayList<>();
