@@ -27,10 +27,7 @@ public class DatabaseActor extends AbstractActor {
     }
 
     private void searchPathInfos(SearchPathInfoQuery pathInfoQuery) {
-        for (PathInfoRecord p : paths) {
-            // tworzymy pojedynczych aktorów na zapytanie (maksymalne zrównoleglenie)
-            getContext().actorOf(NLPActor.props()).tell(new TextWithQuery(p.pathDescription, pathInfoQuery.query), getSelf());
-        }
+        getContext().actorOf(NLPActor.props()).tell(new TextWithQuery(paths, pathInfoQuery.query), getSelf());
     }
 
     private void addToDatabase(PathInfoRecord record) {

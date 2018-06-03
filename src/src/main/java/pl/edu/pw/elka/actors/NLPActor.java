@@ -17,12 +17,12 @@ public class NLPActor extends AbstractActor {
 
     static class TextWithQuery {
 //        final List<String> texts;
-        final String text;
+        final List<PathInfoRecord> texts;
         final String query;
 
-        TextWithQuery(String text, String query) {
+        TextWithQuery(List<PathInfoRecord> text, String query) {
 //            this.texts = texts;
-            this.text = text;
+            this.texts = text;
             this.query = query;
         }
     }
@@ -54,8 +54,8 @@ public class NLPActor extends AbstractActor {
         String text = "a";
 
         // TODO jeśli spełnia zapytanie to wysyłamy zwrotnie wiadomość z tekstem, w przeciwnym przypadku nic nie robimy
-        if(true)
-            getContext().sender().tell(new PathInfoResponse(textWithQuery.text), getSelf());
+        //if(true)
+        //    getContext().sender().tell(new PathInfoResponse(textWithQuery.text), getSelf());
     }
 
     /**
