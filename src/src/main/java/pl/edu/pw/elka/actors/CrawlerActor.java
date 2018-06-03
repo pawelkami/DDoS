@@ -12,10 +12,10 @@ import static pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
 
 public class CrawlerActor extends AbstractActor {
 
-    final String url;
-    final String htmlElementType;
-    final String propertyName;
-    final String propertyValue;
+    private final String url;
+    private final String htmlElementType;
+    private final String propertyName;
+    private final String propertyValue;
 
     /**
      * Wiadomość startująca działanie crawlera.
@@ -51,7 +51,8 @@ public class CrawlerActor extends AbstractActor {
 
             for(String text : foundTexts) {
                 // wysyłamy jako nasz rodzic, żeby wiadomość została zwrócona do naszego rodzica a nie do nas
-                getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getContext().getParent());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
+                if(!text.isEmpty())
+                    getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getContext().getParent());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
             }
         //}
     }

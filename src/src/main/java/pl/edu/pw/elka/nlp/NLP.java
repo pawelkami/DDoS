@@ -36,6 +36,7 @@ import pl.edu.pw.elka.nlp.tools.MeansBuilder;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -191,10 +192,10 @@ public class NLP {
     public List<Pair<String, Double>> checkNewTextSimilarityToModel(String text) throws IOException {
         List<String> labels = new ArrayList<String>();
 
-        try (Stream<String> stream = Files.lines(Paths.get("labels.txt"))) {
+        try (Stream<String> stream = Files.lines(Paths.get(Objects.requireNonNull(getClass().getClassLoader().getResource("labels.txt")).toURI()))) {
             labels = stream.collect(Collectors.toList());
 
-        } catch (IOException e) {
+        } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
 
