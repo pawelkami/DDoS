@@ -9,9 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class NLPUtils {
 
@@ -45,16 +43,19 @@ public class NLPUtils {
      * @param text
      * @return
      */
+
+    private Stemmer stemmer = new PorterStemmer();
+
     public List<String> convertStringToVector(String text)
     {
-        List<String> tokens = removeStopWords(tokenize(text));
+        List<String> tokens = removeStopWords(tokenize(text.toLowerCase()));
         stem(tokens);
 
         return tokens;
     }
 
-    private List<String> removeStopWords(String[] tokens) {
-        List<String> clearedTokens = new ArrayList<String>();
+    public List<String> removeStopWords(String[] tokens) {
+        List<String> clearedTokens = new ArrayList<>();
         for(String s : tokens)
         {
             if(stopwords.contains(s.toLowerCase()))
@@ -66,7 +67,7 @@ public class NLPUtils {
         return clearedTokens;
     }
 
-    private String[] tokenize(String text)
+    public String[] tokenize(String text)
     {
         Tokenizer tokenizer = SimpleTokenizer.INSTANCE;
         return tokenizer.tokenize(text);
@@ -74,10 +75,21 @@ public class NLPUtils {
 
     private void stem(List<String> words)
     {
-        Stemmer stemmer = new PorterStemmer();
         for(int i = 0; i < words.size(); ++i)
         {
             words.set(i, ((PorterStemmer) stemmer).stem(words.get(i)));
         }
+    }
+    public Set<String> stem(Set<String> words)
+    {
+        Set<String> result = new HashSet<>();
+        for(String word : words)
+        {
+            result.add(((PorterStemmer) stemmer).stem(word));
+        }
+        return result;
+    }
+    public String stem(String word) {
+        return ((PorterStemmer) stemmer).stem(word);
     }
 }
