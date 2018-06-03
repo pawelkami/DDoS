@@ -16,12 +16,10 @@ public class NLPActor extends AbstractActor {
     private static final Logger log = LoggerFactory.getLogger(NLPActor.class);
 
     static class TextWithQuery {
-//        final List<String> texts;
-        final List<PathInfoRecord> texts;
+        final List<String> texts;
         final String query;
 
-        TextWithQuery(List<PathInfoRecord> text, String query) {
-//            this.texts = texts;
+        TextWithQuery(List<String> text, String query) {
             this.texts = text;
             this.query = query;
         }
