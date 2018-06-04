@@ -30,9 +30,11 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
 
     static class PathInfoResponse {
         final String pathInfo;
+        final double rating;
 
-        PathInfoResponse(String pathInfo) {
+        PathInfoResponse(String pathInfo, double rating) {
             this.pathInfo = pathInfo;
+            this.rating = rating;
         }
     }
 
@@ -49,6 +51,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
 
     private FSM.State<ConsoleState, ConsoleNoDataIsNeeded> printReceivedPath(PathInfoResponse pathInfo, ConsoleNoDataIsNeeded noData) {
         System.out.println("*************************** PATH DESCRIPTION ***************************");
+        System.out.println("--------------------------- RATING = " + pathInfo.rating + "--------------------------- ");
         System.out.println(pathInfo.pathInfo);
         System.out.println("*************************** END PATH DESCRIPTION ***************************");
         return stay();
