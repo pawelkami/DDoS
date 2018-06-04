@@ -48,7 +48,9 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
     }
 
     private FSM.State<ConsoleState, ConsoleNoDataIsNeeded> printReceivedPath(PathInfoResponse pathInfo, ConsoleNoDataIsNeeded noData) {
+        System.out.println("*************************** PATH DESCRIPTION ***************************");
         System.out.println(pathInfo.pathInfo);
+        System.out.println("*************************** END PATH DESCRIPTION ***************************");
         return stay();
     }
 
