@@ -55,7 +55,8 @@ public class NLPActor extends AbstractActor {
             while (li.hasPrevious()) {
                 MyDocument doc = (MyDocument) li.previous();
                 if (doc.rating > MINIMUM_RATING) {
-                    getContext().sender().tell(new PathInfoResponse(doc.document), getSelf());
+                    getContext().sender().tell(new PathInfoResponse("-------DOCUMENT FOUND WITH " + doc.rating +
+                            "-------\n" + doc.document), getSelf());
                 } else {
                     break;
                 }
