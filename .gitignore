@@ -32,3 +32,5 @@ paravec
 /src/src/main/resources/labeled_data.txt
 /src/src/main/resources/supervised.model.bin
 /src/src/main/resources/unlabeled_data.txt
+
+src/frontier/
