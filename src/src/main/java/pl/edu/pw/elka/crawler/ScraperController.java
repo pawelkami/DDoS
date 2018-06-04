@@ -16,7 +16,7 @@ public class ScraperController {
         /*
          * liczba crawlerow
          */
-        int numberOfCrawlers = 2;
+        int numberOfCrawlers = 3;
 
         CrawlConfig config = new CrawlConfig();
 
@@ -27,19 +27,19 @@ public class ScraperController {
         /*
          * Be polite: zapewnienie wysylania requestow nie czesciej niz co pol sekundy
          */
-        config.setPolitenessDelay(500);
+        config.setPolitenessDelay(1000);
 
         /*
          * You can set the maximum crawl depth here. The default value is -1 for
          * unlimited depth
          */
-        config.setMaxDepthOfCrawling(5);
+        config.setMaxDepthOfCrawling(-1);
 
         /*
          * You can set the maximum number of pages to crawl. The default value
          * is -1 for unlimited number of pages
          */
-        config.setMaxPagesToFetch(100);
+        config.setMaxPagesToFetch(500);
 
         /*
          * Do you want crawler4j to crawl also binary data ?
