@@ -2,7 +2,7 @@
   {
     "url" : "https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park",
     "htmlTagType": "div",
-	"propertyName": "class",
+    "propertyName": "class",
     "propertyValue": "main-content"
   },
   {
@@ -10,5 +10,17 @@
     "htmlTagType": "div",
     "propertyName": "class",
     "propertyValue": "post-content description"
+  },
+  {
+    "url" : "https://cluelesshiker.blogspot.com",
+    "htmlTagType": "div",
+    "propertyName": "itemprop",
+    "propertyValue": "blogPost"
+  },
+  {
+    "url" : "https://www.tyrol.com/things-to-do/sports/hiking/hiking-tours/",
+    "htmlTagType": "article",
+    "propertyName": "class",
+    "propertyValue": "contentArticle"
   }
 ]
