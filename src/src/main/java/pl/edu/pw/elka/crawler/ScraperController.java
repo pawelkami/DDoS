@@ -92,7 +92,10 @@ public class ScraperController {
                     String xpath = "//" + tagType + "[@" + propName + "='" + propValue + "']";
                     String content = crawler.getContentByXpath(xpath);
 
-                    scrapedContents.add(content);
+                    if(content.length() > 0) {
+                        scrapedContents.add(content);
+                    }
+
 //                    System.out.println(content);
                 }
             } catch (NullPointerException e) {
