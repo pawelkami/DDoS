@@ -6,7 +6,7 @@
     "propertyValue": "main-content"
   },
   {
-    "url" : "http://www.cycling-challenge.com/",
+    "url" : "http://www.cycling-challenge.com",
     "htmlTagType": "div",
     "propertyName": "class",
     "propertyValue": "post-content description"
@@ -24,7 +24,7 @@
     "propertyValue": "contentArticle"
   },
   {
-    "url" : "http://www.szklarskaporeba.pl/",
+    "url" : "http://www.szklarskaporeba.pl/en/actively/summer/bicycles/cycling-routes.html",
     "htmlTagType": "div",
     "propertyName": "itemprop",
     "propertyValue": "articleBody"
@@ -63,6 +63,6 @@
     "url" : "https://www.butterfield.com",
     "htmlTagType": "section",
     "propertyName": "class",
-    "propertyValue": "post-wrapper post-top"
+    "propertyValue": "post-wrapper post-top "
   }
 ]

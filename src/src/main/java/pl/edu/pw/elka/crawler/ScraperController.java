@@ -41,7 +41,7 @@ public class ScraperController {
          * You can set the maximum number of pages to crawl. The default value
          * is -1 for unlimited number of pages
          */
-        config.setMaxPagesToFetch(300);
+        config.setMaxPagesToFetch(100);
 
         /*
          * Do you want crawler4j to crawl also binary data ?
@@ -60,7 +60,7 @@ public class ScraperController {
 
         config.setConnectionTimeout(5000);
 
-        config.setUserAgentString("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
+        config.setUserAgentString("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36");
 
         /*
          * Instantiate the controller for this crawl.
