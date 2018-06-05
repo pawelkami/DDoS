@@ -44,7 +44,7 @@ public class Crawler
 
     private void openWebBrowser() {
         ChromeOptions chromeOptions = new ChromeOptions();
-        chromeOptions.addArguments("--headless");
+//        chromeOptions.addArguments("--headless");
         driver = new ChromeDriver(chromeOptions);
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
@@ -165,6 +165,19 @@ public class Crawler
         }
     }
 
+    public String prepareXpath(String tag, String propName, String propValuesAll) {
+        String[] propValues = propValuesAll.split("\\s+");
+        String xpath = "//" + tag + "[";
+
+        for(String propValue : propValues) {
+            xpath += "contains(@" + propName + ", '" + propValue + "') and ";
+        }
+        xpath = xpath.substring(0, xpath.length() - 5);
+        xpath += "]";
+
+        return xpath;
+    }
+
     public void get(String url) {
         if(driver == null) {
             openWebBrowser();
@@ -181,10 +194,17 @@ public class Crawler
     public static void main(String[] args) {
 //        Crawler crawler = Crawler.getInstance();
         Crawler crawler = new Crawler();
-        crawler.get("https://www.wp.pl");
-        crawler.saveScreenshot("D:\\selenium_wp.png");
+        crawler.get("https://www.butterfield.com/blog/2016/04/21/most-memorable-moments-at-the-masters/");
+        String tag = "section";
+        String propName = "class";
+        String propValueAll = "post-wrapper post-top ";
+
+        String xpath = crawler.prepareXpath(tag, propName, propValueAll);
+
+        System.out.println(xpath);
+        String content = crawler.getContentByXpath(xpath);
+        System.out.println(content);
+//        crawler.saveScreenshot("D:\\selenium_wp.png");
         crawler.closeWebDriver();
-        crawler.get("https://www.onet.pl");
-        crawler.saveScreenshot("D:\\selenium_onet.png");
     }
 }
