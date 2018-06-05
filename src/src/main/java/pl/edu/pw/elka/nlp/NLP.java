@@ -216,7 +216,7 @@ public class NLP {
 
         LabelledDocument document = new LabelledDocument();
         document.setContent(text);
-        System.out.println(text);
+        //System.out.println(text);
         try {
             INDArray documentAsCentroid = meansBuilder.documentAsVector(document);
             List<Pair<String, Double>> scores = seeker.getScores(documentAsCentroid);

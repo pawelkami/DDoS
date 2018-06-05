@@ -1,6 +1,6 @@
 [
   {
-    "url" : "https://www.sustrans.org.uk/ncn/map/route/tamsin-trail-richmond-park",
+    "url" : "https://www.sustrans.org.uk",
     "htmlTagType": "div",
     "propertyName": "class",
     "propertyValue": "main-content"
@@ -18,37 +18,37 @@
     "propertyValue": "blogPost"
   },
   {
-    "url" : "https://www.tyrol.com/things-to-do/sports/hiking/hiking-tours/",
+    "url" : "https://www.tyrol.com",
     "htmlTagType": "article",
     "propertyName": "class",
     "propertyValue": "contentArticle"
   },
   {
-    "url" : "http://www.szklarskaporeba.pl/en/actively/summer/bicycles/cycling-routes.html",
+    "url" : "http://www.szklarskaporeba.pl/",
     "htmlTagType": "div",
     "propertyName": "itemprop",
     "propertyValue": "articleBody"
   },
   {
-    "url" : "https://thebigoutside.com/the-best-hikes-in-utahs-national-parks/",
+    "url" : "https://thebigoutside.com/",
     "htmlTagType": "div",
     "propertyName": "class",
     "propertyValue": "column-right"
   },
   {
-    "url" : "https://www.rei.com/adventures/trips/africa/kilimanjaro-climb-lemosho.html",
+    "url" : "https://www.rei.com/",
     "htmlTagType": "div",
     "propertyName": "class",
     "propertyValue": "col-sm-8 content-box-link-explore vertical-pull-lg"
   },
   {
-    "url" : "https://www.wroclaw.pl/en/running-routes",
+    "url" : "https://www.wroclaw.pl",
     "htmlTagType": "div",
     "propertyName": "class",
     "propertyValue": "article_content"
   },
   {
-    "url" : "https://www.nationalgeographic.com/travel/top-10/cycle-routes/",
+    "url" : "https://www.nationalgeographic.com",
     "htmlTagType": "div",
     "propertyName": "id",
     "propertyValue": "article__body"
@@ -60,7 +60,7 @@
     "propertyValue": "col-8 event-detail"
   },
   {
-    "url" : "https://www.butterfield.com/blog/2017/11/29/the-best-cycling-routes-spain/",
+    "url" : "https://www.butterfield.com",
     "htmlTagType": "section",
     "propertyName": "class",
     "propertyValue": "post-wrapper post-top"
