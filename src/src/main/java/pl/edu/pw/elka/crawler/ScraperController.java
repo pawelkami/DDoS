@@ -6,8 +6,10 @@ import edu.uci.ics.crawler4j.fetcher.PageFetcher;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import edu.uci.ics.crawler4j.url.WebURL;
-import java.util.List;
+import pl.edu.pw.elka.utils.Utils;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public class ScraperController {
 
@@ -16,13 +18,13 @@ public class ScraperController {
         /*
          * liczba crawlerow
          */
-        int numberOfCrawlers = 3;
+        int numberOfCrawlers = 2;
 
         CrawlConfig config = new CrawlConfig();
 
         config.setIncludeHttpsPages(true);
 
-        config.setCrawlStorageFolder(".");
+        config.setCrawlStorageFolder("./tmp/" + Utils.generateUniqueFileName());
 
         /*
          * Be polite: zapewnienie wysylania requestow nie czesciej niz co pol sekundy
@@ -39,7 +41,7 @@ public class ScraperController {
          * You can set the maximum number of pages to crawl. The default value
          * is -1 for unlimited number of pages
          */
-        config.setMaxPagesToFetch(500);
+        config.setMaxPagesToFetch(300);
 
         /*
          * Do you want crawler4j to crawl also binary data ?
@@ -57,6 +59,8 @@ public class ScraperController {
         config.setResumableCrawling(false);
 
         config.setConnectionTimeout(5000);
+
+        config.setUserAgentString("Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)");
 
         /*
          * Instantiate the controller for this crawl.
@@ -81,18 +85,18 @@ public class ScraperController {
 
         List<String> scrapedContents = new ArrayList<String>();
 
-        if(!UrlScraper.scrapedUrls.isEmpty()) {
+        if (!UrlScraper.scrapedUrls.isEmpty()) {
             Crawler crawler = new Crawler();
             WebURL webUrl = new WebURL();
             webUrl.setURL(url);
             try {
-                for(String scrapedUrl : UrlScraper.scrapedUrls.get(webUrl.getDomain())) {
+                for (String scrapedUrl : UrlScraper.scrapedUrls.get(webUrl.getDomain())) {
                     crawler.get(scrapedUrl);
 
                     String xpath = "//" + tagType + "[@" + propName + "='" + propValue + "']";
                     String content = crawler.getContentByXpath(xpath);
 
-                    if(content.length() > 0) {
+                    if (content.length() > 0) {
                         scrapedContents.add(content);
                     }
 

@@ -28,7 +28,7 @@ public class SearcherActor extends AbstractActor {
     }
 
     private SearcherActor(String url, String htmlElementType, String propertyName, String propertyValue) {
-        dbActor = getContext().actorOf(DatabaseActor.props());
+        dbActor = getContext().actorOf(DatabaseActor.props(url));
         crawlerActor = getContext().actorOf(CrawlerActor.props(url, htmlElementType, propertyName, propertyValue));
         crawlerActor.tell(new CrawlerStarter(), getSelf()); // uruchamiamy crawlera
         log.debug("Created Searcher for website {}", url);

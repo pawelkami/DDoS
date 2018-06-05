@@ -41,7 +41,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
     /**
      * Czekamy 5 sekund na wiadomości zwrotne.
      */
-    private final long MAX_WAIT_RESPONSE = 5L;
+    private final long MAX_WAIT_RESPONSE = 10L;
 
     private Router router;
 
