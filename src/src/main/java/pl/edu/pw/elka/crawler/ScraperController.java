@@ -93,7 +93,8 @@ public class ScraperController {
                 for (String scrapedUrl : UrlScraper.scrapedUrls.get(webUrl.getDomain())) {
                     crawler.get(scrapedUrl);
 
-                    String xpath = "//" + tagType + "[@" + propName + "='" + propValue + "']";
+//                    String xpath = "//" + tagType + "[@" + propName + "='" + propValue + "']";
+                    String xpath = crawler.prepareXpath(tagType, propName, propValue);
                     String content = crawler.getContentByXpath(xpath);
 
                     if (content.length() > 0) {
