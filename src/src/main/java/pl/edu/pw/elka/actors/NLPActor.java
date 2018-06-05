@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.util.*;
 
 public class NLPActor extends AbstractActor {
-    private final static double MINIMUM_RATING = 0.5;
+    private final static double MINIMUM_RATING_SEARCH = 1.0;
+    private final static double MINIMUM_RATING_CLASSIFY = 0.55;
 
     private static final Logger log = LoggerFactory.getLogger(NLPActor.class);
 
@@ -54,7 +55,7 @@ public class NLPActor extends AbstractActor {
             ListIterator li = texts.listIterator(texts.size());
             while (li.hasPrevious()) {
                 MyDocument doc = (MyDocument) li.previous();
-                if (doc.rating > MINIMUM_RATING) {
+                if (doc.rating > MINIMUM_RATING_SEARCH) {
                     getContext().sender().tell(new PathInfoResponse(doc.document, doc.rating), getSelf());
                 } else {
                     break;
@@ -81,18 +82,19 @@ public class NLPActor extends AbstractActor {
             List<Pair<String, Double>> pairs = nlp.checkNewTextSimilarityToModel(text.text);
 
             Pair<String, Double> best = null;
-
-            for (Pair<String, Double> pair : pairs) {
-                if (best == null) {
-                    best = pair;
-                } else {
-                    if (pair.getSecond() > best.getSecond()) {
+            if(pairs != null) {
+                for (Pair<String, Double> pair : pairs) {
+                    if (best == null) {
                         best = pair;
+                    } else {
+                        if (pair.getSecond() > best.getSecond()) {
+                            best = pair;
+                        }
                     }
                 }
             }
             log.info("Best found classifier is " + best);
-            if (best != null && best.getSecond() >= 0.6)
+            if (best != null && best.getSecond() >= MINIMUM_RATING_CLASSIFY)
                 getContext().sender().tell(new PathInfoRecord(text.text), getSelf());
         } catch (IOException e) {
             e.printStackTrace();

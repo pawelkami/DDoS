@@ -44,7 +44,7 @@ public class Crawler
 
     private void openWebBrowser() {
         ChromeOptions chromeOptions = new ChromeOptions();
-//        chromeOptions.addArguments("--headless");
+        chromeOptions.addArguments("--headless");
         driver = new ChromeDriver(chromeOptions);
         driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
         driver.manage().timeouts().pageLoadTimeout(20, TimeUnit.SECONDS);
