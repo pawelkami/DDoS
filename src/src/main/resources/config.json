@@ -48,7 +48,7 @@
     "propertyValue": "article_content"
   },
   {
-    "url" : "https://www.nationalgeographic.com",
+    "url" : "https://www.nationalgeographic.com/travel/top-10/cycle-routes/",
     "htmlTagType": "div",
     "propertyName": "id",
     "propertyValue": "article__body"
@@ -64,5 +64,17 @@
     "htmlTagType": "section",
     "propertyName": "class",
     "propertyValue": "post-wrapper post-top "
+  },
+  {
+    "url" : "https://travel2walk.com/2018/02/13/trip-report-norway-bodo-lofoten-islands-august-2017/",
+    "htmlTagType": "main",
+    "propertyName": "id",
+    "propertyValue": "main"
+  },
+  {
+    "url" : "http://www.suunto.com/en-US/sports/News-Articles-container-page/3-must-run-routes-in-Barcelona/",
+    "htmlTagType": "div",
+    "propertyName": "class",
+    "propertyValue": "mainbody"
   }
 ]
