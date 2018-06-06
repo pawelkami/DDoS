@@ -43,6 +43,8 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
      */
     private final long MAX_WAIT_RESPONSE = 10L;
 
+    private long receivedResponsesCount = 0;
+
     private Router router;
 
     public static Props props() {
@@ -54,6 +56,7 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
         System.out.println("--------------------------- RATING = " + pathInfo.rating + "--------------------------- ");
         System.out.println(pathInfo.pathInfo);
         System.out.println("*************************** END PATH DESCRIPTION ***************************");
+        receivedResponsesCount++;
         return stay();
     }
 
@@ -172,7 +175,11 @@ public class ConsoleActor extends AbstractFSM<ConsoleState, ConsoleNoDataIsNeede
         onTransition(
                 matchState(ConsoleState.WAITING_FOR_RESPONSES,
                         ConsoleState.USER_INPUT,
-                        this::run)
+                        () -> {
+                            System.out.printf("Found %d texts.%n", receivedResponsesCount);
+                            receivedResponsesCount = 0;
+                            run();}
+                        )
         );
 
         whenUnhandled(matchAnyEvent((any, noData) -> {
