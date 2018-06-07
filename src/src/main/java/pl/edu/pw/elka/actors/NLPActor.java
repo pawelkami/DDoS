@@ -65,10 +65,6 @@ public class NLPActor extends AbstractActor {
             log.error("Some of resources are not initialized.");
             e.printStackTrace();
         }
-
-        // TODO jeśli spełnia zapytanie to wysyłamy zwrotnie wiadomość z tekstem, w przeciwnym przypadku nic nie robimy
-        //if(true)
-        //    getContext().sender().tell(new PathInfoResponse(textWithQuery.text), getSelf());
     }
 
     /**

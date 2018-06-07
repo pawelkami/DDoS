@@ -1,18 +1,9 @@
 package pl.edu.pw.elka.nlp;
 
-//import net.sf.extjwnl.data.IndexWord;
-//import net.sf.extjwnl.data.POS;
-//import net.sf.extjwnl.data.PointerType;
-//import net.sf.extjwnl.data.Synset;
-//import net.sf.extjwnl.data.relationship.Relationship;
-//import net.sf.extjwnl.data.relationship.RelationshipFinder;
-//import net.sf.extjwnl.data.relationship.RelationshipList;;
-//import net.sf.extjwnl.dictionary.Dictionary;
 
 import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.*;
-import org.bytedeco.javacv.FrameFilter;
 import org.deeplearning4j.models.embeddings.inmemory.InMemoryLookupTable;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
@@ -39,7 +30,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -100,56 +90,7 @@ public class NLP {
         dict.open();
     }
 
-    public static void main(String[] args) throws Exception {
-//        NLP nlp = new NLP();
-//
-////
-////        HashMap<String, Double> similarWords = nlp.findSimilarWords(s, 15);
-////        System.out.println(similarWords);
-//
-////        nlp.checkTwoTextsSimilarity("aaa", "cycle");
-//
-//
-////        Set<String> sss = new HashSet<>();
-////        String asd = nlp.nlpUtils.stem("cycle");
-////        System.out.println(asd);
-////        sss.add(asd);
-////
-////        similarWords = nlp.findSimilarWords(sss, 15);
-////        System.out.println(similarWords);
-////
-////        synonyms = nlp.findSynonyms(sss);
-////        System.out.println(synonyms);
-//
-////        nlp.createNewModel(nlp.modelName);
-//
-//
-//        Path unlabeled_path = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c1.txt");
-//        String stringFromFile = java.nio.file.Files.lines(unlabeled_path).collect(Collectors.joining());
-//        Path unlabeled_path2 = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c2.txt");
-//        String stringFromFile2 = java.nio.file.Files.lines(unlabeled_path2).collect(Collectors.joining());
-//        nlp.checkNewTextSimilarityToModel(stringFromFile);
-//////
-//////        Path baseText = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\labeled_corpuses\\cycling\\col-de-crozet.txt");
-//////        String stringFromFile2 = java.nio.file.Files.lines(baseText).collect(Collectors.joining());
-//////        Double result = nlp.checkTwoTextsSimilarity(stringFromFile2, "cycling near Col de la Faucille");
-//////        System.out.println(result);
-////
-////
-////        HashMap<String, Integer> a = nlp.countWordsInDoc(stringFromFile);
-////        double sim = nlp.checkTwoTextsSimilarity(stringFromFile, "Cycling paths col de crozet Zmutt");
-//
-//
-//        List<String> d = new ArrayList<>();
-//        d.add(stringFromFile2);
-//        d.add(stringFromFile);
-//        List<MyDocument> sim = nlp.checkTextsSimilarity(d, "cycling in zmutt");
-//        System.out.println(sim);
-
-
-    }
-
-    void createNewModel(String modelFileName) throws IOException {
+    private void createNewModel(String modelFileName) throws IOException {
         LabelAwareIterator iterator;
         File files = new File("/C:/Users/KUBA/Desktop/WEDT/DDoS/datasets/labeled_corpuses");
 
@@ -332,7 +273,7 @@ public class NLP {
                     int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuerySynonyms).documentCounter;
                     double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
                     double tfIdf = tf * idf;
-                    document.rating += 0.5*tfIdf;
+                    document.rating += 0.5 * tfIdf;
                 }
             }
         }
@@ -345,7 +286,7 @@ public class NLP {
                     int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuerySimilarWords).documentCounter;
                     double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
                     double tfIdf = tf * idf;
-                    document.rating += 0.3*tfIdf * tokenizedQuerySimilarWords.get(tokenQuerySimilarWords);
+                    document.rating += 0.3 * tfIdf * tokenizedQuerySimilarWords.get(tokenQuerySimilarWords);
                 }
             }
         }

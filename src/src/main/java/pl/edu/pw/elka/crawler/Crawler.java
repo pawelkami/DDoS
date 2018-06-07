@@ -20,9 +20,7 @@ public class Crawler
 {
     private WebDriver driver;
     private String lastUrl;
-
-//    private static Crawler instance;
-
+    
     public Crawler() {
         driver = null;
         lastUrl = "";
@@ -31,16 +29,6 @@ public class Crawler
         System.setProperty("webdriver.chrome.driver", Objects.requireNonNull(getClass().getClassLoader().getResource("chromedriver.exe")).getPath());
         openWebBrowser();
     }
-
-//    /**
-//     * Create a static method to get instance.
-//     */
-//    public static Crawler getInstance(){
-//        if(instance == null){
-//            instance = new Crawler();
-//        }
-//        return instance;
-//    }
 
     private void openWebBrowser() {
         ChromeOptions chromeOptions = new ChromeOptions();
