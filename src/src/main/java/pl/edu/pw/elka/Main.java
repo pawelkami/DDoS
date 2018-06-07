@@ -13,6 +13,7 @@ class Main {
 
 
     public static void main(String[] args) {
+        NLP tmp = new NLP(); // for caching vector
         final ActorSystem actorSystem = ActorSystem.create("ddos");
         final ActorRef consoleActor = actorSystem.actorOf(ConsoleActor.props(), "console");
 
