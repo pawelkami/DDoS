@@ -5,8 +5,8 @@ import akka.actor.Props;
 import pl.edu.pw.elka.actors.NLPActor.TextToClassify;
 import pl.edu.pw.elka.crawler.ScraperController;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 import static pl.edu.pw.elka.actors.DatabaseActor.PathInfoRecord;
 
@@ -36,25 +36,21 @@ public class CrawlerActor extends AbstractActor {
     }
 
     private void searchDocuments() {
+        ScraperController controller = new ScraperController();
+        List<String> foundTexts = null;
 
-        //while (true) {
-            // TODO szukamy dokumentów i je wysyłamy, reszta sama się już stanie - agent sam dostanie już wiadomość zwrotną asynchronicznie jeśli tekst był poprawny
+        try {
+            foundTexts = new ArrayList<String>(controller.crawl(this.url, this.htmlElementType, this.propertyName, this.propertyValue));
+        } catch (Exception e) {
+            foundTexts = new ArrayList<String>();
+        }
 
-            ScraperController controller = new ScraperController();
-            List<String> foundTexts = null;
-
-            try {
-                foundTexts = new ArrayList<String>(controller.crawl(this.url, this.htmlElementType, this.propertyName, this.propertyValue));
-            } catch (Exception e) {
-                foundTexts = new ArrayList<String>();
+        for (String text : foundTexts) {
+            // wysyłamy jako nasz rodzic, żeby wiadomość została zwrócona do naszego rodzica a nie do nas
+            if (!text.isEmpty()) {
+                getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getContext().getParent());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
             }
-
-            for(String text : foundTexts) {
-                // wysyłamy jako nasz rodzic, żeby wiadomość została zwrócona do naszego rodzica a nie do nas
-                if(!text.isEmpty())
-                    getContext().actorOf(NLPActor.props()).tell(new TextToClassify(text), getContext().getParent());   // wysyłamy do NLP wiadomość żeby sprawdził czy tekst pasuje do klasyfikatora
-            }
-        //}
+        }
     }
 
     @Override

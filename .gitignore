@@ -35,3 +35,5 @@ paravec
 
 src/frontier/
 frontier
+src/tmp/*
+src/records/*

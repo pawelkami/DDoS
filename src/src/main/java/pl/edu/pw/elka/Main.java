@@ -13,12 +13,6 @@ class Main {
 
 
     public static void main(String[] args) {
-
-        try {
-            NLP.getInstance();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         final ActorSystem actorSystem = ActorSystem.create("ddos");
         final ActorRef consoleActor = actorSystem.actorOf(ConsoleActor.props(), "console");
 
