@@ -13,11 +13,13 @@ import edu.mit.jwi.Dictionary;
 import edu.mit.jwi.IDictionary;
 import edu.mit.jwi.item.*;
 import org.bytedeco.javacv.FrameFilter;
+import org.deeplearning4j.models.embeddings.WeightLookupTable;
 import org.deeplearning4j.models.embeddings.inmemory.InMemoryLookupTable;
 import org.deeplearning4j.models.embeddings.loader.WordVectorSerializer;
 import org.deeplearning4j.models.embeddings.wordvectors.WordVectors;
 import org.deeplearning4j.models.paragraphvectors.ParagraphVectors;
 import org.deeplearning4j.models.word2vec.VocabWord;
+import org.deeplearning4j.models.word2vec.wordstore.VocabCache;
 import org.deeplearning4j.text.documentiterator.FileLabelAwareIterator;
 import org.deeplearning4j.text.documentiterator.LabelAwareIterator;
 import org.deeplearning4j.text.documentiterator.LabelledDocument;
@@ -26,7 +28,9 @@ import org.deeplearning4j.text.tokenization.tokenizerfactory.DefaultTokenizerFac
 import org.deeplearning4j.text.tokenization.tokenizerfactory.TokenizerFactory;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.exception.ND4JIllegalStateException;
+import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.io.ClassPathResource;
+import org.nd4j.linalg.ops.transforms.Transforms;
 import org.nd4j.linalg.primitives.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -57,18 +62,18 @@ public class NLP {
     private String modelName = "model1.zip";
 
     private static final Logger log = LoggerFactory.getLogger(NLP.class);
-    private static volatile NLP instance = null;
+//    private static volatile NLP instance = null;
 
-    public static NLP getInstance() throws IOException {
-        if (instance == null) {
-            synchronized (NLP.class) {
-                if (instance == null) {
-                    instance = new NLP();
-                }
-            }
-        }
-        return instance;
-    }
+//    public static NLP getInstance() throws IOException {
+//        if (instance == null) {
+//            synchronized (NLP.class) {
+//                if (instance == null) {
+//                    instance = new NLP();
+//                }
+//            }
+//        }
+//        return instance;
+//    }
 
 
     private class MyDocumentCounter {
@@ -81,27 +86,27 @@ public class NLP {
         }
     }
 
-    private NLP() throws IOException {
+    public NLP() {
         tokenizerFactory = new DefaultTokenizerFactory();
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
 
         nlpUtils = new NLPUtils();
 
-        File resource = new ClassPathResource("glove.6B.50d.txt").getFile();
-        gloveWordVectors = WordVectorSerializer.loadTxtVectors(resource);
-
-        // construct the URL to the Wordnet dictionary directory
-        String path = "C:\\WordNet\\2.1\\dict";
-        URL url = null;
-        url = new URL("file", null, path);
-
-        // construct the dictionary object and open it
-        dict = new Dictionary(url);
-        dict.open();
+//        File resource = new ClassPathResource("glove.6B.50d.txt").getFile();
+//        gloveWordVectors = WordVectorSerializer.loadTxtVectors(resource);
+//
+//        // construct the URL to the Wordnet dictionary directory
+//        String path = "C:\\WordNet\\2.1\\dict";
+//        URL url = null;
+//        url = new URL("file", null, path);
+//
+//        // construct the dictionary object and open it
+//        dict = new Dictionary(url);
+//        dict.open();
     }
 
     public static void main(String[] args) throws Exception {
-//        NLP nlp = new NLP();
+        NLP nlp = new NLP();
 //
 ////
 ////        HashMap<String, Double> similarWords = nlp.findSimilarWords(s, 15);
@@ -121,11 +126,11 @@ public class NLP {
 ////        synonyms = nlp.findSynonyms(sss);
 ////        System.out.println(synonyms);
 //
-////        nlp.createNewModel(nlp.modelName);
+//        nlp.createNewModel(nlp.modelName);
 //
 //
-//        Path unlabeled_path = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c1.txt");
-//        String stringFromFile = java.nio.file.Files.lines(unlabeled_path).collect(Collectors.joining());
+        Path unlabeled_path = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\src\\records\\szklarskaporeba.pl\\7V7u74T1byTDCwhG_5Jun2018220953GMT_1528236593056.txt");
+        String stringFromFile = java.nio.file.Files.lines(unlabeled_path).collect(Collectors.joining());
 //        Path unlabeled_path2 = Paths.get("C:\\Users\\KUBA\\Desktop\\WEDT\\DDoS\\datasets\\test_corpuses\\c2.txt");
 //        String stringFromFile2 = java.nio.file.Files.lines(unlabeled_path2).collect(Collectors.joining());
 //        nlp.checkNewTextSimilarityToModel(stringFromFile);
@@ -145,8 +150,7 @@ public class NLP {
 //        d.add(stringFromFile);
 //        List<MyDocument> sim = nlp.checkTextsSimilarity(d, "cycling in zmutt");
 //        System.out.println(sim);
-
-
+        System.out.println(nlp.checkTwoTextsSimilarity_v2(stringFromFile, "cycling near Zermatt"));
     }
 
     void createNewModel(String modelFileName) throws IOException {
@@ -164,7 +168,7 @@ public class NLP {
                 .learningRate(0.025)
                 .minLearningRate(0.001)
                 .batchSize(1000)
-                .epochs(20)
+                .epochs(60)
                 .iterate(iterator)
                 .trainWordVectors(true)
                 .tokenizerFactory(tokenizerFactory)
@@ -185,8 +189,36 @@ public class NLP {
                 writer.write(label + "\n");
             }
         }
+    }
 
+    public double checkTwoTextsSimilarity_v2(String text1, String text2) throws IOException {
+        if (vec == null) {
+            try {
+                final String path = new ClassPathResource(modelName).getFile().getAbsolutePath();
+                log.debug(path);
+                vec = WordVectorSerializer.readParagraphVectors(path);
+            } catch (IOException e) {
+                createNewModel(modelName);
+            }
+        }
 
+        MeansBuilder meansBuilder = new MeansBuilder(
+                (InMemoryLookupTable<VocabWord>) vec.getLookupTable(),
+                tokenizerFactory);
+
+        LabelledDocument document3 = new LabelledDocument();
+        document3.setContent(text1);
+        INDArray documentAsCentroid3 = meansBuilder.documentAsVector(document3);
+
+        LabelledDocument document4 = new LabelledDocument();
+        document4.setContent(text2);
+        INDArray documentAsCentroid4 = meansBuilder.documentAsVector(document4);
+        try {
+            return Transforms.cosineSim(documentAsCentroid3, documentAsCentroid4);
+        }
+        catch (ND4JIllegalStateException e) {
+            return 0.0;
+        }
     }
 
     public List<Pair<String, Double>> checkNewTextSimilarityToModel(String text) throws IOException {
@@ -216,7 +248,6 @@ public class NLP {
 
         LabelledDocument document = new LabelledDocument();
         document.setContent(text);
-        System.out.println(text);
         try {
             INDArray documentAsCentroid = meansBuilder.documentAsVector(document);
             List<Pair<String, Double>> scores = seeker.getScores(documentAsCentroid);
@@ -332,7 +363,7 @@ public class NLP {
                     int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuerySynonyms).documentCounter;
                     double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
                     double tfIdf = tf * idf;
-                    document.rating += 0.5*tfIdf;
+                    document.rating += 0.5 * tfIdf;
                 }
             }
         }
@@ -345,7 +376,7 @@ public class NLP {
                     int wordExistsInDocsCounter = wordsInAllDocuments.get(tokenQuerySimilarWords).documentCounter;
                     double idf = Math.log(listOfTextsWords.size() / wordExistsInDocsCounter);
                     double tfIdf = tf * idf;
-                    document.rating += 0.3*tfIdf * tokenizedQuerySimilarWords.get(tokenQuerySimilarWords);
+                    document.rating += 0.3 * tfIdf * tokenizedQuerySimilarWords.get(tokenQuerySimilarWords);
                 }
             }
         }
