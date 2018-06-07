@@ -37,7 +37,9 @@ public class DatabaseActor extends AbstractActor {
 
     private void searchPathInfos(SearchPathInfoQuery pathInfoQuery) {
         log.info("Searching query {} in database size {}", pathInfoQuery.query, paths.size());
-        getContext().actorOf(NLPActor.props()).tell(new TextWithQuery(paths, pathInfoQuery.query), getSelf());
+        for (String path : paths) {
+            getContext().actorOf(NLPActor.props()).tell(new TextWithQuery(path, pathInfoQuery.query), getSelf());
+        }
     }
 
     private void addToDatabase(PathInfoRecord record) {
