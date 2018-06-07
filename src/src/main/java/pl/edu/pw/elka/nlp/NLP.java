@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class NLP {
-    private ParagraphVectors vec;
+    private static ParagraphVectors vec;
     private TokenizerFactory tokenizerFactory;
 
     // model name
@@ -44,12 +44,10 @@ public class NLP {
 
     private static final Logger log = LoggerFactory.getLogger(NLP.class);
 
-
     public NLP() {
         tokenizerFactory = new DefaultTokenizerFactory();
         tokenizerFactory.setTokenPreProcessor(new CommonPreprocessor());
     }
-
 
     private void createNewModel(String modelFileName) throws IOException {
         LabelAwareIterator iterator;
