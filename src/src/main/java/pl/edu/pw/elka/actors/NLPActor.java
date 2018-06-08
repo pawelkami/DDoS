@@ -69,22 +69,15 @@ public class NLPActor extends AbstractActor {
             NLP nlp = new NLP();
             List<Pair<String, Double>> pairs = nlp.checkNewTextSimilarityToModel(text.text);
 
-            Pair<String, Double> best = new Pair<>("temporary min val", Double.MIN_VALUE);
-            if (pairs != null) {
-                for (Pair<String, Double> pair : pairs) {
-                    if (pair.getFirst().equals("cycling") ||
-                            pair.getFirst().equals("hiking") ||
-                            pair.getFirst().equals("running"))
-                    {
-                        if (pair.getSecond() > best.getSecond()) {
-                            best = pair;
-                        }
-                    }
+            for (Pair<String, Double> pair : pairs) {
+                if ((pair.getFirst().equals("cycling") && pair.getSecond() >= MINIMUM_RATING_CLASSIFY)
+                        || (pair.getFirst().equals("hiking") && pair.getSecond() >= MINIMUM_RATING_CLASSIFY)
+                        || ((pair.getFirst().equals("running") && pair.getSecond() >= MINIMUM_RATING_CLASSIFY)))
+                {
+                    getContext().sender().tell(new PathInfoRecord(text.text), getSelf());
+                    return;
                 }
             }
-            log.info("Best found classifier is " + best);
-            if (best != null && best.getSecond() >= MINIMUM_RATING_CLASSIFY)
-                getContext().sender().tell(new PathInfoRecord(text.text), getSelf());
         } catch (IOException e) {
             e.printStackTrace();
         }
