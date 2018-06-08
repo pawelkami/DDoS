@@ -69,12 +69,13 @@ public class NLPActor extends AbstractActor {
             NLP nlp = new NLP();
             List<Pair<String, Double>> pairs = nlp.checkNewTextSimilarityToModel(text.text);
 
-            Pair<String, Double> best = null;
+            Pair<String, Double> best = new Pair<>("temporary min val", Double.MIN_VALUE);
             if (pairs != null) {
                 for (Pair<String, Double> pair : pairs) {
-                    if (best == null) {
-                        best = pair;
-                    } else {
+                    if (pair.getFirst().equals("cycling") ||
+                            pair.getFirst().equals("hiking") ||
+                            pair.getFirst().equals("running"))
+                    {
                         if (pair.getSecond() > best.getSecond()) {
                             best = pair;
                         }

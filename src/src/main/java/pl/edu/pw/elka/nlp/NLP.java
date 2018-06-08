@@ -87,7 +87,7 @@ public class NLP {
         }
     }
 
-    public double checkTwoTextsSimilarity(String text1, String text2) throws IOException {
+    public double checkTwoTextsSimilarity(String baseDocument, String Query) throws IOException {
         if (vec == null) {
             try {
                 final String path = new ClassPathResource(modelName).getFile().getAbsolutePath();
@@ -102,15 +102,15 @@ public class NLP {
                 (InMemoryLookupTable<VocabWord>) vec.getLookupTable(),
                 tokenizerFactory);
 
-        LabelledDocument document3 = new LabelledDocument();
-        document3.setContent(text1);
-        INDArray documentAsCentroid3 = meansBuilder.documentAsVector(document3);
+        LabelledDocument labelledDocument = new LabelledDocument();
+        labelledDocument.setContent(baseDocument);
 
-        LabelledDocument document4 = new LabelledDocument();
-        document4.setContent(text2);
-        INDArray documentAsCentroid4 = meansBuilder.documentAsVector(document4);
+        LabelledDocument labelledQuery = new LabelledDocument();
+        labelledQuery.setContent(Query);
         try {
-            return Transforms.cosineSim(documentAsCentroid3, documentAsCentroid4);
+            INDArray baseTextAsCentroid = meansBuilder.documentAsVector(labelledDocument);
+            INDArray queryAsCentroid = meansBuilder.documentAsVector(labelledQuery);
+            return Transforms.cosineSim(baseTextAsCentroid, queryAsCentroid);
         }
         catch (ND4JIllegalStateException e) {
             return 0.0;
