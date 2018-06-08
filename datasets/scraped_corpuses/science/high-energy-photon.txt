@@ -1,0 +1,26 @@
+A high-energy photon polarimeter for astrophysics studies in the energy range from 10 to 800 MeV is considered. The proposed concept uses a stack of silicon microstrip detectors, where they play the roles of both a converter and a tracker. The purpose of this paper is to outline the parameters of such a polarimeter and to estimate the productivity of measurements. Our study, supported by a Monte Carlo simulation, shows that with a 1-year observation period the polarimeter will provide 6% accuracy of the polarization degree for photon energies above 100 MeV, which would be a significant advance relative to the currently explored energy range of a few MeV. The proposed polarimeter design could easily be adjusted to the specific photon energy range to maximize efficiency if needed.
+Recent discoveries have underlined a key role of astrophysics in the study of nature. We are presenting a potential instrument for measuring high-energy photon polarization with a proven detector technique that should allow preparation of a reliable tool for a future spaceborne observatory.
+
+Polarization of the photon has played an important role (sometimes even before it was recognized) in physics discoveries such as the famous Young’s interference experiment,1 Michelson–Morley’s test of the Ether theory,2 determination of the neutral pion parity,3,4 and many others, including more recently the spin structure of the nucleon.5 Polarization of the cosmic microwave background (CMB) will likely be a crucial observable for the inflation theory. (See PLANCK6 results for constraints on inflationary models based on nondetection of B-modes and Ref. 7 for a review.)
+
+During the last decade, observations from the AGILE8 and FERMI-LAT9 pair production telescopes have enhanced our understanding of gamma (
+
+) ray astronomy. With the help of these telescopes, numerous high-energy 
+
+-ray sources have been observed. However, the current measurements are insufficient to fully understand the physics mechanism of such 
+
+-ray sources as gamma-ray bursts (GRBs), active galactic nuclei (AGNs), blazars, pulsars, and supernova remnants (SNRs). Even though both telescopes cover a wide range of energy (from 20 MeV to more than 300 GeV), neither of them is capable of sufficiently accurate polarization measurements (recently the authors of Ref. 10 estimated that a 
+
+
+ minimum detectable polarization of 
+
+30
+to 50% could be detected by FERMI-LAT for the brightest 
+
+ ray sources only after 10 years of observation) that could shed light on the numerous open problems in medium- to high-energy 
+
+ ray astrophysics. For example, precise measurements of ray polarization for 
+
+ rays could be used, in principle, to determine the nature of the emission mechanisms responsible for blazars, GRBs, x-ray binaries, pulsars, and magnetars. Moreover, measurements of 
+
+-ray polarization from distant sources such as blazars or GRBs can help address problems in fundamental physics, such as Lorenz invariance.11

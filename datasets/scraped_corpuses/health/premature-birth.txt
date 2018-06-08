@@ -1,0 +1,24 @@
+Premature birth risk could be measured by blood test – study
+Findings offer hope of accurate predictions on age of foetus and early birth through test that picks up free-floating RNA in the mother’s blood
+Whether a pregnant woman is at risk of premature delivery could eventually be predicted by a blood test, according to new research.
+
+The study found that both the age of a developing foetus, and whether a woman was at risk of giving birth early, could be worked out using a test that picks up free-floating RNA, DNA’s single-stranded cousin, in the mother’s blood.
+
+Although researchers behind the study warn that the research is based on only a small number of participants, and has not yet been used in clinical trials, the findings offer hopebecause current tests to identify a risk of preterm birth are invasive and expensive.
+
+The study, published in the journal Science, reveals how blood samples taken weekly from 31 women during their pregnancy were used to create, train and check, a model which allowed the team to estimate the age of the foetus based on nine different free-floating RNAs.
+
+
+Sign up for Lab Notes - the Guardian's weekly science update
+ Read more
+Using blood samples taken in both the second and third trimesters, the model predicted the correct gestational age to within 14 days 45% of the time. By contrast ultrasound imaging carried out in the first trimester of pregnancy was similarly correct 48% of the time for the 31 women.
+
+At present gestational age is generally predicted using the expensive technique of ultrasound imaging, which becomes less accurate after the first trimester, and a woman’s knowledge of her last period – which can be inaccurate.
+
+The team created a further test, involving seven free-floating RNAs, based on data from blood samples from another small group of pregnant women, all of whom were at high risk of premature delivery. When applied to another 23 such women using blood samples taken up to two months before delivery, the test accurately identified four out of five women who had gone on to spontaneously give birth early but mistakenly flagged 17% of those who actually delivered at full term.
+
+“To really get to the final results, and before we actually apply a test that we put into production, we need to do a larger study,” said Dr Mads Melbye, a co-author of the research from Stanford University and the Statens Serum Institute in Copenhagen. He also noted it could be several years before the test, if confirmed, becomes available.
+
+Professor Andrew Shennan, Tommy’s clinical director of the pre-term surveillance clinic at Guys and St Thomas’ Hospital, agreed further work was crucial, but said the initial results are promising. “Obviously the numbers [of participants] are very small but the results are very impressive,” he said.
+
+Shennan added the ability to work out gestational age from a blood test could be particularly useful in developing countries, where access to ultrasound is limited, to help time deliveries while keeping both mother and baby safe. “Because the way to save lives is often to deliver babies and mothers early, this becomes critical,” he said.
